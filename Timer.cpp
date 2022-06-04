@@ -13,6 +13,34 @@ Timer::Timer(int delay)
 }
 
 /*!
+    @brief  Timer contructor initializes timer, delay and callback function
+    @param  delay   Delay between timer intervals
+    @param  callback    Callback function when timer hits
+    @return Timer object
+*/
+Timer::Timer(int delay, void (*callback)())
+{
+    this->delay = delay;
+    this->previousTime = 0;
+    this->runTimer = true;
+    this->callback = callback;
+}
+
+/*!
+    @brief  Timer contructor initializes timer, delay and callback function with integer parameter
+    @param  delay   Delay between timer intervals
+    @param  callback    Callback function when timer hits, including int parameter
+    @return Timer object
+*/
+Timer::Timer(int delay, void (*callbackInt)(int))
+{
+    this->delay = delay;
+    this->previousTime = 0;
+    this->runTimer = true;
+    this->callbackInt = callbackInt;
+}
+
+/*!
     @brief  Checks if timer is ready to run
     @param  time    Current time, to be compared with internal previous time
     @return Boolean true if timer is ready, else false
@@ -35,12 +63,61 @@ bool Timer::check(unsigned long time)
 }
 
 /*!
+    @brief  Checks if timer is ready and runs specified callback when it is
+    @param  time    Current time, to be compared with internal previous time
+    @return Boolean true if timer is ready, else false
+*/
+bool Timer::runCheck(unsigned long time)
+{
+    if (check(time))
+    {
+        callback();
+        return true;
+    }
+    return false;
+}
+
+/*!
+    @brief  Checks if timer is ready and runs specified callback when it is
+    @param  time    Current time, to be compared with internal previous time
+    @param  param   Callback parameter
+    @return Boolean true if timer is ready, else false
+*/
+bool Timer::runCheck(unsigned long time, int param)
+{
+    if (check(time))
+    {
+        callbackInt(param);
+        return true;
+    }
+    return false;
+}
+
+/*!
     @brief  Changes the delay from initialization
     @param  delay   Delay between timer intervals
 */
 void Timer::changeDelay(int delay)
 {
     this->delay = delay;
+}
+
+/*!
+    @brief  Changes the callback function from initialization
+    @param  callback   Callback function when timer hits
+*/
+void Timer::changeCallback(void (*callback)())
+{
+    this->callback = callback;
+}
+
+/*!
+    @brief  Changes the callback function from initialization
+    @param  callback   Callback function when timer hits
+*/
+void Timer::changeCallback(void (*callbackInt)(int))
+{
+    this->callbackInt = callbackInt;
 }
 
 /*!
