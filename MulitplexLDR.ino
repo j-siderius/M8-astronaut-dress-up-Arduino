@@ -1,5 +1,6 @@
  /* 
-Multiplexer reading 8 LDR sensors and storing value in array
+This program reads values of a set of double 8 channel Multiplexers reading 8 LDR sensors each and stores the values in arrays.
+Completes threshold comparison for further communication
 Based on example by MehranMaleki 
 */
 
@@ -9,16 +10,19 @@ int s0 = 2;
 int s1 = 3;
 int s2 = 4;
 
-//Mux in "Z" pin
-int Z_pin = 0;
+//Muliplex Analog in in "Z" pin
+int zPlanet = A0;
+int zBody = A1;
 
 
-//Output value array
-int Outputs [8] = {0,0,0,0,0,0,0,0};
-
-//thresholds
-int thresh = 1; // value needs to be adjusted
-int BinOut [8] = {0,0,0,0,0,0,0,0}; // 1: planet gone 0: planet there
+//Output value arrays
+float planetOut [8] = {0,0,0,0,0,0,0,0};
+float bodyOut [8] = {0,0,0,0,0,0,0,0};
+//binary arrays
+int binOutPlanet [8] = {0,0,0,0,0,0,0,0}; // 1: planet gone 0: planet there
+int binOutBody [8] = {0,0,0,0,0,0,0,0}; // 1: bodypart gone 0: bodypart there
+//threshold
+float thresh = 1.0; // 1v of voltage is a good estimate of threshold betwen the v of an ldr that is blacked out and one that isn't
 
 void setup(){
   pinMode(s0, OUTPUT); 
@@ -37,23 +41,40 @@ void loop()
 {
   //Loop through and read all 8 values
   for(int i = 0; i < 8; i ++){
-      Serial.print("Value at channel ");
+      Serial.print("Value at planet ");
       Serial.print(i);
       Serial.print("is : ");
       //Serial.println(readLDR(i));
-      Outputs [i] = readLDR (i);
-      Serial.println(Outputs[i]);
-      if (Outputs [i] <= 2){
-        BinOut [i] = 0;
+      planetOut [i] = readLDR (i,zPlanet);
+      Serial.println(planetOut[i]);
+      if (planetOut[i] <= thresh){
+        binOutPlanet[i] = 0;
       }
-      if (Outputs [i] > 2){
-        BinOut [i] = 1;
+      if (planetOut[i] > thresh){
+        binOutPlanet[i] = 1;
       }
       delayInLoop(500);
-      i++;
     }
   for(int b = 0; b < 8; b ++ ){
-    Serial.println(BinOut[b]);
+    Serial.println(binOutPlanet[b]);
+  }
+  for(int i = 0; i < 8; i ++){
+      Serial.print("Value at bodypart ");
+      Serial.print(i);
+      Serial.print("is : ");
+      //Serial.println(readLDR(i));
+      bodyOut [i] = readLDR (i,zBody);
+      Serial.println(bodyOut[i]);
+      if (bodyOut[i] <= thresh){
+        binOutBody[i] = 0;
+      }
+      if (bodyOut[i] > thresh){
+        binOutBody[i] = 1;
+      }
+      delayInLoop(500);
+    }
+  for(int b = 0; b < 8; b ++ ){
+    Serial.println(binOutBody[b]);
   }
  /*int peterDoesNotKnowHowToCode = analogRead(A0); 
  Serial.println(peterDoesNotKnowHowToCode);*/
@@ -62,7 +83,7 @@ void loop()
 
 
 
-float readLDR(int channel){
+float readLDR(int channel, int Z_pin){
   int controlPin[] = {s0, s1, s2};
 
   int muxChannel[8][3]={
