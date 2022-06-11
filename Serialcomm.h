@@ -8,12 +8,12 @@ class Serialcomm
 private:
     char functionCall[20];
     void (*functionCallback[20])();
+    int index = 0;
     int byteTimeout = 2;
 
 public:
     Serialcomm();
-    void addFunction(int index, char call, void (*callback)());
-    void updateFunctionCallback(int index, void (*callback)());
+    void addFunction(char call, void (*callback)());
     void updateSerial();
     void checkCalls(char incomingByte);
     int readVar(int numberDecimals);
