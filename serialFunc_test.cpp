@@ -15,19 +15,18 @@ void funcB() {
 }
 
 void funcC() {
-  int boo = comm.readBool();
+  bool boo = comm.readBool();
   Serial.print("Function C: ");
-  if (boo) Serial.println("True");
-  else Serial.println("False");
+  Serial.println(boo ? "true" : "false");
 }
 
 void setup() {
   Serial.begin(9600);
   comm = Serialcomm();
 
-  comm.addFunction(0, 'A', funcA);
-  comm.addFunction(1, 'B', funcB);
-  comm.addFunction(2, 'C', funcC);
+  comm.addFunction('A', funcA);
+  comm.addFunction('B', funcB);
+  comm.addFunction('C', funcC);
 }
 
 void loop() {
