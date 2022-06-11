@@ -16,18 +16,10 @@ Serialcomm::Serialcomm() {
   @param  call   Character that calls this function
   @param  callback  Function that will be called when call is registered
 */
-void Serialcomm::addFunction(int index, char call, void (*callback)()) {
+void Serialcomm::addFunction( char call, void (*callback)()) {
   this->functionCall[index] = call;
   this->functionCallback[index] = callback;
-}
-
-/*!
-  @brief  Update the callback function of specific call
-  @param  index  Index of the function in the list
-  @param  callback  Function that will be called when call is registered
-*/
-void Serialcomm::updateFunctionCallback(int index, void (*callback)()) {
-  this->functionCallback[index] = callback;
+  index++;
 }
 
 /*!
@@ -69,12 +61,12 @@ int Serialcomm::readVar(int numberDecimals) {
   int timeOut = byteTimeout * numberDecimals;
   char buf[numberDecimals];
   int variable;
-  
+
   Serial.setTimeout(timeOut);
 
   Serial.readBytes(buf, numberDecimals);
   variable = String(buf).toInt();
-  
+
   Serial.setTimeout(1000);
 
   return variable;
@@ -85,5 +77,7 @@ int Serialcomm::readVar(int numberDecimals) {
   @returns Boolean from variable
 */
 bool Serialcomm::readBool() {
-  return Serial.read();
+  delay(2);  // TODO: check how to delete the delay!!
+  int boo = Serial.read() - '0';
+  return boo ? true : false;
 }
