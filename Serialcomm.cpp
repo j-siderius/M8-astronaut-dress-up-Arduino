@@ -17,9 +17,13 @@ Serialcomm::Serialcomm() {
   @param  callback  Function that will be called when call is registered
 */
 void Serialcomm::addFunction( char call, void (*callback)()) {
-  this->functionCall[index] = call;
-  this->functionCallback[index] = callback;
-  index++;
+  if (index < 20) {
+    this->functions[index].call = call;
+    this->functions[index].callback = callback;
+    index++;
+  } else {
+    Serial.println("ERROR: too many functions in serial comm manager!");
+  }
 }
 
 /*!
@@ -38,9 +42,9 @@ void Serialcomm::updateSerial() {
 */
 void Serialcomm::checkCalls(char incomingByte) {
   if (incomingByte >= 33 && incomingByte < 127) {
-    for (int i = 0; i < sizeof(functionCall) - 1; i++) {
-      if (incomingByte == functionCall[i]) {
-        functionCallback[i]();
+    for (int i = 0; i < index; i++) {
+      if (incomingByte == functions[i].call) {
+        functions[i].callback();
         return;
       }
     }
@@ -77,7 +81,7 @@ int Serialcomm::readVar(int numberDecimals) {
   @returns Boolean from variable
 */
 bool Serialcomm::readBool() {
-  delay(2);  // TODO: check how to delete the delay!!
+  delay(2);  // TODO: check if possible to delete the delay
   int boo = Serial.read() - '0';
   return boo ? true : false;
 }
