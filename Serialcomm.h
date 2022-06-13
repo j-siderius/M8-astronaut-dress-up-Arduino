@@ -6,8 +6,11 @@
 class Serialcomm
 {
 private:
-    char functionCall[20];
-    void (*functionCallback[20])();
+    struct Func {
+      char call;
+      void (*callback)();
+    };
+    Func functions[20];
     int index = 0;
     int byteTimeout = 2;
 
