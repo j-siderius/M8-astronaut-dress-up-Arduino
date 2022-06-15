@@ -6,11 +6,12 @@
 class Serialcomm
 {
 private:
+    int maxFunctions = 20;
     struct Func {
       char call;
       void (*callback)();
     };
-    Func functions[20];
+    Func functions[maxFunctions];
     int index = 0;
     int byteTimeout = 2;
 
@@ -19,8 +20,15 @@ public:
     void addFunction(char call, void (*callback)());
     void updateSerial();
     void checkCalls(char incomingByte);
-    int readVar(int numberDecimals);
+    void confirmReceived(char call);
+    int readInt(int numberDecimals);
+    char readChar(int numberChars);
+    String readLine();
     bool readBool();
+    void sendChar(char call);
+    void sendChars(char[] calls);
+    void sendBool(bool boo);
+    void sendIntArray(int[] intArray);
 };
 
 #endif
