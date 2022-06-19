@@ -6,7 +6,7 @@
 class Serialcomm
 {
 private:
-    int maxFunctions = 20;
+    static const int maxFunctions = 20;
     struct Func {
       char call;
       void (*callback)();
@@ -26,9 +26,10 @@ public:
     String readLine();
     bool readBool();
     void sendChar(char call);
-    void sendChars(char[] calls);
+    void sendChars(char calls[], int arrLen);
     void sendBool(bool boo);
-    void sendIntArray(int[] intArray);
+    void sendIntArray(int intArray[], int arrLen);
+    void sendBoolArray(bool boolArray[], int arrLen);
 };
 
 #endif

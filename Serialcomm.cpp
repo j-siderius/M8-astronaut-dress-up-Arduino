@@ -67,6 +67,7 @@ int Serialcomm::readInt(int numberDecimals) {
   int timeOut = byteTimeout * numberDecimals;
   char buf[numberDecimals];
   int variable;
+  delay(2);
 
   Serial.setTimeout(timeOut);
 
@@ -87,10 +88,13 @@ int Serialcomm::readInt(int numberDecimals) {
 char Serialcomm::readChar(int numberChars) {
   int timeOut = byteTimeout * numberChars;
   char buf[numberChars];
+  delay(2);
 
   Serial.setTimeout(timeOut);
 
-  Serial.readBytes(buf, numberChars);
+  for (int i = 0; i < numberChars; i++) {
+    buf[i] = Serial.read();
+  }
 
   Serial.setTimeout(1000);
 
@@ -112,7 +116,7 @@ bool Serialcomm::readBool() {
   @returns String from serial
 */
 String Serialcomm::readLine() {
-  return Serial.readStringUntil(10);  // TODO: confirm this actually works
+  return Serial.readStringUntil('\n');  // TODO: confirm this actually works
 }
 
 /*!
@@ -135,9 +139,10 @@ void Serialcomm::sendChar(char call) {
 /*!
   @brief  Sends an array of character over the serial port
   @param  calls  Call character array that will be sent
+  @param  arrLen  Lenght of the array, used for looping
 */
-void Serialcomm::sendChars(char[] calls) {
-  for (int i = 0; i < sizeof(calls); i++) {
+void Serialcomm::sendChars(char calls[], int arrLen) {
+  for (int i = 0; i < arrLen; i++) {
     Serial.print(calls[i]);
   }
   Serial.println();  // TODO: check if this is nescessary
@@ -154,10 +159,24 @@ void Serialcomm::sendBool(bool boo) {
 /*!
   @brief  Sends an interger array over the serial port
   @param  intArray  Integer array that will be sent
+  @param  arrLen  Lenght of the array, used for looping
 */
-void Serialcomm::sendIntArray(int[] intArray) {
-  for (int i = 0; i < (sizeof(intArray) / sizeof(intArray[0])); i++) {
+void Serialcomm::sendIntArray(int intArray[], int arrLen) {
+  for (int i = 0; i < arrLen; i++) {
     Serial.print(intArray[i]);
+  }
+  Serial.println();  // TODO: check if LN is nescessary
+}
+
+/*!
+  @brief  Sends an boolean array over the serial port
+  @param  boolArray  Boolean array that will be sent
+  @param  arrLen  Lenght of the array, used for looping
+*/
+void Serialcomm::sendBoolArray(bool boolArray[], int arrLen) {
+  Serial.println(arrLen);
+  for (int i = 0; i < arrLen; i++) {
+    Serial.print(boolArray[i]);
   }
   Serial.println();  // TODO: check if LN is nescessary
 }
