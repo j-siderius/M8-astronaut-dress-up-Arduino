@@ -64,9 +64,12 @@ void funcPlanetData()
 
     // decoding
     // TODO: IDENTIFIER SUBJECT TO CHANGE
-    // data structure = G0.000T1O1K-000P1C00.00.00Z00
-    // G = G-force float 1.234G | T = toxicity 0/1 | O = oxygen 0/1 | K = temperature -123C | P = gas giant 0/1 | C = composition 12C.34H.56N | Z = oxygen composition 12%
-    int gforceIndex = data.indexOf("G");
+    // G-force|Toxic|Oxygen|SurfaceTemperature|GasGiant|OxygenComposition|CO2|N2|O2|CH4|H2|He|SurfacePressure|Distance
+    //     F| T|  O|     K| G|   C|  E|   |   |   |   |   |     P|      D
+    // 0.000| 0|  0|  -000| 0|  00| 00| 00| 00| 00| 00| 00| 0.000|  0.000
+    // example: F0.908T1O0K-195G1C00E0|0|0|2|83|15P1000D2867
+
+    int gforceIndex = data.indexOf("F");
     float planetGForce = data.substring(gforceIndex+1, gforceIndex+6).toFloat() * 1.000;  // TODO: accuracy is now only two decimals
     int toxicityIndex = data.indexOf("T");
     bool planetToxicity = data.substring(toxicityIndex+1, toxicityIndex+2).toInt();
@@ -74,20 +77,37 @@ void funcPlanetData()
     bool planetOxygen = data.substring(oxygenIndex+1, oxygenIndex+2).toInt();
     int temperatureIndex = data.indexOf("K");
     int planetTemperature = data.substring(temperatureIndex+1, temperatureIndex+5).toInt();
-    int gasIndex = data.indexOf("P");
+    int gasIndex = data.indexOf("G");
     bool planetGasGiant = data.substring(gasIndex+1, gasIndex+2).toInt();
     int compositionIndex = data.indexOf("C");
-    String planetComposition = data.substring(compositionIndex+1, compositionIndex+9);
-    int oxygenCompIndex = data.indexOf("Z");
-    int planetOxygenComposition = data.substring(oxygenCompIndex+1, oxygenCompIndex+3).toInt();
+    String planetComposition = data.substring(compositionIndex+1, compositionIndex+3);
+    int elementIndex = data.indexOf("E");
+    int planetElementCO2 = data.substring(elementIndex+1, elementIndex+3).toInt();
+    int planetElementN2 = data.substring(elementIndex+3, elementIndex+5).toInt();
+    int planetElementO2 = data.substring(elementIndex+5, elementIndex+7).toInt();
+    int planetElementCH4 = data.substring(elementIndex+7, elementIndex+9).toInt();
+    int planetElementH2 = data.substring(elementIndex+9, elementIndex+11).toInt();
+    int planetElementHe = data.substring(elementIndex+11, elementIndex+13).toInt();
+    int pressureIndex = data.indexOf("P");
+    float planetPressure = data.substring(pressureIndex+1, pressureIndex+6).toFloat() * 1.000;  // TODO: accuracy is now only two decimals
+    int distanceIndex = data.indexOf("D");
+    float planetDistance = data.substring(distanceIndex+1, distanceIndex+6).toFloat() * 1.000;  // TODO: accuracy is now only two decimals
 
     Serial.print("G-force:"); Serial.println(planetGForce);
     Serial.print("Toxicity:"); Serial.println(planetToxicity);
     Serial.print("Oxygen:"); Serial.println(planetOxygen);
     Serial.print("Temperature:"); Serial.println(planetTemperature);
     Serial.print("Gas giant:"); Serial.println(planetGasGiant);
-    Serial.print("Composition:"); Serial.println(planetComposition);
-    Serial.print("Oxygen percentage:"); Serial.println(planetOxygenComposition);
+    Serial.print("OxygenComp:"); Serial.println(planetComposition);
+    Serial.println("Elements:");
+    Serial.print("CO2:"); Serial.println(planetElementCO2);
+    Serial.print("N2:"); Serial.println(planetElementN2);
+    Serial.print("O2:"); Serial.println(planetElementO2);
+    Serial.print("CH4:"); Serial.println(planetElementCH4);
+    Serial.print("H2:"); Serial.println(planetElementH2);
+    Serial.print("He:"); Serial.println(planetElementHe);
+    Serial.print("Pressure:"); Serial.println(planetPressure);
+    Serial.print("Distance:"); Serial.println(planetDistance);
 
     comm.confirmReceived('D');
 }
