@@ -4,7 +4,7 @@
 
 Serialcomm comm;
 
-void funcFlow(), funcPlanetName(), funcPlanetData(), funcPlanetTravel(), funcAstronautSurvival(), funcPlanetArray(), funcAstronautArray(), funcLaunchCheck(), funcLaunchConfirm();
+void funcFlow(), funcPlanetName(), funcPlanetData(), funcAstronautSurvival(), funcPlanetArray(), funcAstronautArray(), funcLaunchCheck(), funcLaunchConfirm();
 bool planets[8] = {true, true, true, true, true, true, true, true};
 bool astronaut[12] = {true, true, true, true, true, true, true, true, true, true, true, true};
 
@@ -18,7 +18,6 @@ void setup()
     comm.addFunction('F', funcFlow);
     comm.addFunction('N', funcPlanetName);
     comm.addFunction('D', funcPlanetData);
-    comm.addFunction('T', funcPlanetTravel);
     comm.addFunction('S', funcAstronautSurvival);
     comm.addFunction('L', funcLaunchConfirm);
     
@@ -64,10 +63,10 @@ void funcPlanetData()
 
     // decoding
     // TODO: IDENTIFIER SUBJECT TO CHANGE
-    // G-force|Toxic|Oxygen|SurfaceTemperature|GasGiant|OxygenComposition|CO2|N2|O2|CH4|H2|He|SurfacePressure|Distance
-    //     F| T|  O|     K| G|   C|  E|   |   |   |   |   |     P|      D
-    // 0.000| 0|  0|  -000| 0|  00| 00| 00| 00| 00| 00| 00| 0.000|  0.000
-    // example: F0.908T1O0K-195G1C00E0|0|0|2|83|15P1000D2867
+    // G-force|Toxic|Oxygen|SurfaceTemperature|GasGiant|CO2|N2|O2|CH4|H2|He|SurfacePressure|Distance
+    //     F| T|  O|     K| G|  E|   |   |   |   |   |     P|      D
+    // 0.000| 0|  0|  -000| 0| 00| 00| 00| 00| 00| 00| 0.000|  0.000
+    // example: F0.908T1O0K-195G1E0|0|0|2|83|15P1000D2867
 
     int gforceIndex = data.indexOf("F");
     float planetGForce = data.substring(gforceIndex+1, gforceIndex+6).toFloat() * 1.000;  // TODO: accuracy is now only two decimals
@@ -79,8 +78,6 @@ void funcPlanetData()
     int planetTemperature = data.substring(temperatureIndex+1, temperatureIndex+5).toInt();
     int gasIndex = data.indexOf("G");
     bool planetGasGiant = data.substring(gasIndex+1, gasIndex+2).toInt();
-    int compositionIndex = data.indexOf("C");
-    String planetComposition = data.substring(compositionIndex+1, compositionIndex+3);
     int elementIndex = data.indexOf("E");
     int planetElementCO2 = data.substring(elementIndex+1, elementIndex+3).toInt();
     int planetElementN2 = data.substring(elementIndex+3, elementIndex+5).toInt();
@@ -98,7 +95,6 @@ void funcPlanetData()
     Serial.print("Oxygen:"); Serial.println(planetOxygen);
     Serial.print("Temperature:"); Serial.println(planetTemperature);
     Serial.print("Gas giant:"); Serial.println(planetGasGiant);
-    Serial.print("OxygenComp:"); Serial.println(planetComposition);
     Serial.println("Elements:");
     Serial.print("CO2:"); Serial.println(planetElementCO2);
     Serial.print("N2:"); Serial.println(planetElementN2);
@@ -110,16 +106,6 @@ void funcPlanetData()
     Serial.print("Distance:"); Serial.println(planetDistance);
 
     comm.confirmReceived('D');
-}
-
-void funcPlanetTravel()
-{
-    int travelTime = comm.readInt(3);
-    Serial.print("Planet travel time: ");
-    Serial.println(travelTime);
-    // processing traveltime
-    //
-    comm.confirmReceived('T');
 }
 
 void funcAstronautSurvival()
