@@ -1,8 +1,8 @@
- /* 
+/* 
 This program reads values of a set of three 8 channel Multiplexers reading 8 LDR sensors each and stores the values in arrays.
 Completes threshold comparison for further communication
-Based on example by MehranMaleki 
 */
+
 
 
 //Mulitplexer control pins
