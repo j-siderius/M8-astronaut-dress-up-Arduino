@@ -5,10 +5,16 @@
 
 class tempLed {
   private:
+  /*
+  Creates variables (variable for temperature should be passed from the serial to void turnon
+  */
     CRGB leds[NUM_LEDS];
     int temperature;
     int brightness;
   public:
+    /*
+    Turns leds on. Also pass temperature through this method
+    */
     void turnOn() {
       int ledDisplay = NUM_LEDS * float(temperature + 200) / 700 + 1;
       for (int i = 0; i < int(ledDisplay); i++) {
@@ -18,7 +24,9 @@ class tempLed {
       }
       FastLED.show();
     }
-
+    /*
+    Turns leds off. 
+    */
     void turnOff() {
       for (int i = 0; i < NUM_LEDS; i++) {
         leds[i].r = 0;
