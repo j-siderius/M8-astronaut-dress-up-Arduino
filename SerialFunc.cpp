@@ -1,9 +1,12 @@
 #include <Arduino.h>
 
+// including the serial class
 #include "Serialcomm.h"
 
+// making serial object
 Serialcomm comm;
 
+// making placeholder functions and array
 void funcFlow(), funcPlanetName(), funcPlanetData(), funcAstronautSurvival(), funcPlanetArray(), funcAstronautArray(), funcLaunchCheck(), funcLaunchConfirm();
 bool planets[8] = {true, true, true, true, true, true, true, true};
 bool astronaut[12] = {true, true, true, true, true, true, true, true, true, true, true, true};
@@ -12,9 +15,11 @@ bool astronaut[12] = {true, true, true, true, true, true, true, true, true, true
 
 void setup()
 {
+    // serial port can only be opened in main sketch
     Serial.begin(9600);
     comm = Serialcomm();
 
+    // add functions and their call sign
     comm.addFunction('F', funcFlow);
     comm.addFunction('N', funcPlanetName);
     comm.addFunction('D', funcPlanetData);
@@ -28,11 +33,13 @@ void setup()
 
 void loop()
 {
+    // check the serial and if call sign is recognized, run function
     comm.updateSerial();
 }
 
 //-------------------------\\
 
+// flow variable for interaction stage management
 void funcFlow()
 {
     int state = comm.readInt(1);
@@ -43,6 +50,7 @@ void funcFlow()
     comm.confirmReceived('F');
 }
 
+// gets planet name to display on LCD
 void funcPlanetName()
 {
     String name = comm.readLine();
@@ -53,6 +61,7 @@ void funcPlanetName()
     comm.confirmReceived('N');
 }
 
+// gets the bulk of data for processing
 void funcPlanetData()
 {
     String data = comm.readLine();
@@ -90,6 +99,7 @@ void funcPlanetData()
     int distanceIndex = data.indexOf("D");
     float planetDistance = data.substring(distanceIndex+1, distanceIndex+6).toFloat() * 1.000;  // TODO: accuracy is now only two decimals
 
+    // TODO: delete debugging print statements
     Serial.print("G-force:"); Serial.println(planetGForce);
     Serial.print("Toxicity:"); Serial.println(planetToxicity);
     Serial.print("Oxygen:"); Serial.println(planetOxygen);
@@ -108,6 +118,7 @@ void funcPlanetData()
     comm.confirmReceived('D');
 }
 
+// received bool to check if astronaut survives
 void funcAstronautSurvival()
 {
     bool survival = comm.readBool();
@@ -118,6 +129,7 @@ void funcAstronautSurvival()
     comm.confirmReceived('S');
 }
 
+// sends the planet array
 void funcPlanetArray()
 {
     char planetFuncDef[] = "PA";
@@ -125,6 +137,7 @@ void funcPlanetArray()
     comm.sendBoolArray(planets, sizeof(planets));
 }
 
+// sends the astronaut part array
 void funcAstronautArray()
 {
     char astronautFuncDef[] = "AA";
@@ -132,12 +145,14 @@ void funcAstronautArray()
     comm.sendBoolArray(astronaut, sizeof(astronaut));
 }
 
+// checks with Python if we can launch
 void funcLaunchCheck()
 {
     comm.sendChar('L');
     comm.sendBool(true);
 }
 
+// confirms launch
 void funcLaunchConfirm()
 {
     bool launchConfirm = comm.readBool();
