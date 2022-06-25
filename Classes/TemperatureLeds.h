@@ -1,3 +1,7 @@
+/*
+This program handles the thermometer leds
+*/
+
 #include <FastLED.h>
 #include "Timer.h"
 #define NUM_LEDS 16
