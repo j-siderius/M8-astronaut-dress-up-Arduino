@@ -39,10 +39,10 @@ class DialServos
   public:
 
     DialServos(int startPin){
-      this->startPin = startPin;
-    };
+      this->startPin;
+    }
 
-    void runServos() {
+    void run() {
       unsigned long curTime = millis();
       if (startAni == true){
         startUp(curTime);

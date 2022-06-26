@@ -8,6 +8,8 @@
 #include "DialServos.h"
 #include "DestinationLCD.h"
 #include "TemperatureLeds.h"
+#include "TravelLight.h"
+#include "RingOfFire.h"
 
 
 //All pin definitions go here
@@ -24,9 +26,14 @@ LDR LDRs(ldrD, ldrA);
 DialServos DashServos(servPin);
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 DestinationLCD DestLCD(); //not working yet
+TravelLight TravelLight();
 
 
+//global variables
+//installation status variables
+bool launching; //true as for the time after succesful start via launchbutton until planet is reached after predefined time
 
+//Planet/Serial variables
 
 
 void setup() {
@@ -35,8 +42,10 @@ void setup() {
 }
 
 void loop() {
-  Comms.updateSerial();
+  //Comms.updateSerial();
   LDRs.updateArrays();
-  DashServos.runServos();
+  DashServos.run();
+  TravelLight.run(launching);
+
 
 }

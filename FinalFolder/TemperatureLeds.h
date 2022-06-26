@@ -4,6 +4,7 @@ This program handles the thermometer leds
 
 #include <FastLED.h>
 #include "Timer.h"
+
 #define NUM_LEDS 16
 #define DATA_PIN 13
 
@@ -15,6 +16,7 @@ class tempLed {
     CRGB leds[NUM_LEDS];
     int temperature;
     int brightness;
+    
   public:
     /*
     Turns leds on. Also pass temperature through this method
