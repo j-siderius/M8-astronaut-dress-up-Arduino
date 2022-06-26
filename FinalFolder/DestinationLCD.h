@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Arduino.h>
-#include "LiquidCrystal_I2C.h"
 
 class DestinationLCD 
 {
@@ -15,12 +14,12 @@ class DestinationLCD
       @warning  THIS CLASS CANNOT START THE LCD OBJECT; add LiquidCrystal_I2C lcd([address], [chars], [columns]); in main yourself!
     */
     void LCDinit() {
-      lcd.init();
+      /*lcd.init();
       lcd.backlight();
       lcd.clear();
 
       lcd.setCursor(2, 0);
-      lcd.print("Destination:");
+      lcd.print("Destination:");*/
     }
 
     /*!
@@ -31,12 +30,12 @@ class DestinationLCD
     void LCDupdate(String name) {
       if (name != planetName) {
         planetName = name;
-        lcd.clear();
+      /*  lcd.clear();
 
         lcd.setCursor(2, 0);
         lcd.print("Destination:");
         lcd.setCursor(2, 1);
-        lcd.print(planetName);
+        lcd.print(planetName);*/
       }
     }
 
