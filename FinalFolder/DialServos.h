@@ -24,7 +24,7 @@ class DialServos
 
     float pressure; 
     bool startAni; //toggle start up animation
-    bool launchConfirm; //toggle rocket launching animation
+    //bool launchConfirm; //toggle rocket launching animation
     int startGrav=300; //gravity at the start of the launch 
 
    // Timer launchTime = Timer(50, launchDials); 
@@ -42,7 +42,7 @@ class DialServos
       this->startPin;
     }
 
-    void run() {
+    void run(bool launchConfirm) {
       unsigned long curTime = millis();
       if (startAni == true){
         startUp(curTime);

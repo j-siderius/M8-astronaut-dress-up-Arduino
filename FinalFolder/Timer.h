@@ -95,7 +95,7 @@ public:
         @param  param   Callback parameter
         @return Boolean true if timer is ready, else false
     */
-    bool runCheck(unsigned long time, int param)
+   /* bool runCheck(unsigned long time, int param)
     {
         if (check(time))
         {
@@ -103,7 +103,7 @@ public:
             return true;
         }
         return false;
-    }
+    }*/
 
     /*!
         @brief  Changes the delay from initialization

@@ -1,8 +1,8 @@
 #include <Arduino.h>
 
 #include "Timer.h"
-
 #include <FastLED.h>
+
 #define NUM_LEDS 16
 #define DATA_PIN 8
 
@@ -17,7 +17,20 @@ class RingOfFire{
     //Timer ledFireTimer = Timer(1000, ledFire);
   public:
 
-    RingOfFire();
+    RingOfFire(){
+       // initialize LEDs
+      FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
+      // give each LED a starting color
+      for (int i = 0; i < NUM_LEDS; i++)
+      {
+        // generate random number for green component
+        int g = random(0, 256);
+        // set LED to default red and random green component
+        leds[i].setRGB(255, g, 0);
+      }
+      // show LEDs
+      FastLED.show();
+    }
       
     void run()
     {
@@ -66,21 +79,5 @@ class RingOfFire{
       // add some random delay
       int randDelay = random(100, 250);
       //ledFireTimer.changeDelay(randDelay);
-    }
-
-    void ledFireInit()
-    {
-      // initialize LEDs
-      FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
-      // give each LED a starting color
-      for (int i = 0; i < NUM_LEDS; i++)
-      {
-        // generate random number for green component
-        int g = random(0, 256);
-        // set LED to default red and random green component
-        leds[i].setRGB(255, g, 0);
-      }
-      // show LEDs
-      FastLED.show();
-    }      
+    } 
 };

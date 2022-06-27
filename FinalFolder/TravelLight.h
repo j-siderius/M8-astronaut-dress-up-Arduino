@@ -16,25 +16,17 @@ class TravelLight
     // define function variables
     //bool travelLEDon = true; //now called launching as global 
     int index = 0;
-    void travelLED();
-
-    // timer object
-    Timer travelLEDtimer = Timer(0, travelLED);
+    
+    Timer travelLEDtimer;
 
   public:
     TravelLight();
-    void ini() {
-      // initialise the LED strip
-      FastLED.addLeds<NEOPIXEL, LED_ADDR>(leds, NUM_LEDS);
-      FastLED.clear(true);
 
-      // change the speed of the LED travel
-      // TODO: this is subject to change e.g. implement this function call inside of the data handler
-      travelLEDtimer.changeDelay(200);
-    }
-    void run(bool launching) {
+    // timer object
+    
+    void run(bool launchConfirm) {
       // check if the travelLED is active and then check if we can update it
-      if (launching) travelLEDtimer.runCheck(millis());
+      if (launchConfirm) travelLEDtimer.runCheck(millis());
     }    
     void travelLED() {
       // turn all LEDS off
@@ -53,6 +45,16 @@ class TravelLight
 
       // show the LEDs
       FastLED.show();
+    }
+
+    void ini() {
+      // initialise the LED strip
+      FastLED.addLeds<NEOPIXEL, LED_ADDR>(leds, NUM_LEDS);
+      FastLED.clear(true);
+      this->travelLEDtimer = Timer(0, &TravelLight::travelLED);
+      // change the speed of the LED travel
+      // TODO: this is subject to change e.g. implement this function call inside of the data handler
+      travelLEDtimer.changeDelay(200);
     }
 
 };
