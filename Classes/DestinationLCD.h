@@ -13,7 +13,7 @@ class DestinationLCD {
       @warning  THIS CLASS CANNOT START THE LCD OBJECT; add LiquidCrystal_I2C lcd([address], [chars], [columns]); in main yourself!
     */
     void LCDinit() {
-      lcd.begin(16, 2);
+      lcd.begin();
       lcd.backlight();
       lcd.clear();
 

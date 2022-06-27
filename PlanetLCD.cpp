@@ -1,5 +1,5 @@
 // include LCD library
-#include <LiquidCrystal_I2C.h>
+#include "LiquidCrystal_I2C.h"
 
 // object for LCD
 // @warning THIS OBJECT CANNOT BE MADE OUTSIDE OF MAIN FILE!
@@ -28,3 +28,4 @@ void loop()
   // change the planet text, this function only needs to be called when we want to update, not on a regular interval!
   destination.LCDupdate("Mercury");
 }
+
