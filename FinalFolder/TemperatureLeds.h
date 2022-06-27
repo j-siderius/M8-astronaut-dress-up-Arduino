@@ -5,28 +5,33 @@ This program handles the thermometer leds
 #include <FastLED.h>
 #include "Timer.h"
 
-#define NUM_LEDS 16
-#define DATA_PIN 13
 
-class tempLed {
+class TempLed {
   private:
+    
+    int dPin;
+    int numLeds = 16;
   /*
   Creates variables (variable for temperature should be passed from the serial to void turnon
   */
-    CRGB leds[NUM_LEDS];
+    CRGB leds[16];
     int temperature;
     int brightness;
     
   public:
+  
+    TempLed (int dPin){
+      this->dPin =dPin;
+    }
     /*
     Turns leds on. Also pass temperature through this method
     */
     void turnOn() {
-      int ledDisplay = NUM_LEDS * float(temperature + 200) / 700 + 1;
+      int ledDisplay = numLeds * float(temperature + 200) / 700 + 1;
       for (int i = 0; i < int(ledDisplay); i++) {
         leds[i].r = i * brightness;
-        leds[i].g = 1.5 * (NUM_LEDS / 2 - abs(NUM_LEDS / 2 - i)) * brightness;
-        leds[i].b = (NUM_LEDS - i) * brightness;
+        leds[i].g = 1.5 * (numLeds / 2 - abs(numLeds / 2 - i)) * brightness;
+        leds[i].b = (numLeds - i) * brightness;
       }
       FastLED.show();
     }
@@ -34,7 +39,7 @@ class tempLed {
     Turns leds off. 
     */
     void turnOff() {
-      for (int i = 0; i < NUM_LEDS; i++) {
+      for (int i = 0; i < numLeds; i++) {
         leds[i].r = 0;
         leds[i].g = 0;
         leds[i].b = 0;

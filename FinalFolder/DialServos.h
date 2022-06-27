@@ -1,3 +1,4 @@
+
 //This program moves servos according to an individual mapping
 //g-force; oxygen; pressure;
 
@@ -42,7 +43,7 @@ class DialServos
       this->startPin;
     }
 
-    void run(bool launchConfirm) {
+    void Dialrun(bool launchConfirm) {
       unsigned long curTime = millis();
       if (startAni == true){
         startUp(curTime);

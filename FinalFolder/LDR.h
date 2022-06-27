@@ -6,6 +6,7 @@
 class LDR
 {
 private: 
+
   //Mulitplexer control pins
   int dPin[6];
 

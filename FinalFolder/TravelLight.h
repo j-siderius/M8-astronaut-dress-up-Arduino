@@ -24,7 +24,7 @@ class TravelLight
 
     // timer object
     
-    void run(bool launchConfirm) {
+    void Travelrun(bool launchConfirm) {
       // check if the travelLED is active and then check if we can update it
       if (launchConfirm) travelLEDtimer.runCheck(millis());
     }    
@@ -51,7 +51,7 @@ class TravelLight
       // initialise the LED strip
       FastLED.addLeds<NEOPIXEL, LED_ADDR>(leds, NUM_LEDS);
       FastLED.clear(true);
-      this->travelLEDtimer = Timer(0, &TravelLight::travelLED);
+      //this->travelLEDtimer = Timer(0, &TravelLight::travelLED);
       // change the speed of the LED travel
       // TODO: this is subject to change e.g. implement this function call inside of the data handler
       travelLEDtimer.changeDelay(200);

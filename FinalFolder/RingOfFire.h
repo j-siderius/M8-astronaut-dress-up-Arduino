@@ -4,13 +4,14 @@
 #include <FastLED.h>
 
 #define NUM_LEDS 16
-#define DATA_PIN 8
+#define D_PIN 12 //apparently this is neccessary after all
 
 class RingOfFire{
   private:
     //void ledFire();
     //void ledFireInit();
-
+    
+    //int dPin;
     // initialize LED array
     CRGB leds[NUM_LEDS];
     //Timer ledFireTimer = Timer(100, ledFire);
@@ -19,7 +20,7 @@ class RingOfFire{
 
     RingOfFire(){
        // initialize LEDs
-      FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
+      FastLED.addLeds<NEOPIXEL, D_PIN>(leds, NUM_LEDS);
       // give each LED a starting color
       for (int i = 0; i < NUM_LEDS; i++)
       {

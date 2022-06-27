@@ -8,14 +8,17 @@ class SendFunc{
   private:
 
   public:
+      
       // making placeholder functions and array
-      void funcFlow(), funcPlanetName(), funcPlanetData(), funcAstronautSurvival(), funcPlanetArray(), funcAstronautArray(), funcLaunchCheck(), funcLaunchConfirm();
+    //  void funcFlow(), funcPlanetName(), funcPlanetData(), funcAstronautSurvival(), funcPlanetArray(), funcAstronautArray(), funcLaunchCheck(), funcLaunchConfirm(); //This will be problematic
       bool planets[8] = {true, true, true, true, true, true, true, true};
       bool astronaut[12] = {true, true, true, true, true, true, true, true, true, true, true, true};
 
       //-------------------------\\
 
-      void init()
+      SendFunc(Serialcomm());
+
+      void Sendinit()
       {
           
           comm = Serialcomm();
@@ -31,13 +34,7 @@ class SendFunc{
           comm.addFunction('P', funcPlanetArray);
           comm.addFunction('A', funcAstronautArray);
       }
-
-      void loop()
-      {
-          // check the serial and if call sign is recognized, run function
-          comm.updateSerial();
-      }
-
+      
       //-------------------------\\
 
       // flow variable for interaction stage management
@@ -154,7 +151,7 @@ class SendFunc{
       }
 
       // confirms launch
-      void funcLaunchConfirm()
+      void funcLaunchConfirm(bool launchConfirm)
       {
           launchConfirm = comm.readBool();
           if (launchConfirm)
