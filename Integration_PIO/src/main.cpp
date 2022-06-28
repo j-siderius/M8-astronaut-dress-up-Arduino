@@ -6,10 +6,12 @@
 #include "Mosfet.h"
 #include "SerialComm.h"
 #include "TemperatureController.h"
+#include "TemperatureLED.h"
 
 // pin definitions
 #define temperatureColdPin 20
-#define temperatureHotPin 20
+#define temperatureHotPin 21
+#define temperatureLEDPin 22
 
 // object definitions
 Serialcomm comm;
@@ -19,7 +21,8 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 String planetName;
 void LCDinit(), LCDupdate();
 // LCD implementation ^^^
-TemperatureController temp = TemperatureController(temperatureColdPin, temperatureHotPin);
+TemperatureController tempFan = TemperatureController(temperatureColdPin, temperatureHotPin);
+TemperatureLED tempLED = TemperatureLED(temperatureLEDPin);
 
 void setup() {
   Serial.begin(9600);  
@@ -29,11 +32,11 @@ void setup() {
 
 void loop() {
   delay(1000);
-  temp.setTemperature(0);
-  temp.tempOn();
+  tempLED.setTemperature(10);
+  tempLED.turnOn();
   delay(1000);
-  temp.tempOff();
-  
+  tempLED.turnOff();
+
 }
 
 void LCDinit() {
