@@ -15,17 +15,30 @@ private:
   int index = 0;
   CRGB leds[travelLEDnr];
   Timer travelLEDtimer = Timer(200);
+  int maxTime;
 
 public:
   /*!
   @brief Constructor for the Travel LED
+  @param  maxTime Max time it may take to complete the travel path in ms
   @note   dataPin cannot be defined in the constructor, do that in the class!!
   @return TravelLED object
   */
-  TravelLED()
+  TravelLED(int maxTime)
   {
+    this->maxTime = maxTime;
+
     FastLED.addLeds<NEOPIXEL, travelLEDPin>(leds, travelLEDnr);
     FastLED.clear(true);
+  }
+
+  /*!
+  @brief Updates the travel time according to the distance
+  @param  distance Distance to the planet
+  */
+  void setTravelTime(int distance) {
+    int delay = (log(distance + 1) / log(5000) * maxTime) / 20;
+    travelLEDtimer.changeDelay(delay);
   }
 
   /*!
