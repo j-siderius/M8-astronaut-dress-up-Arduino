@@ -8,11 +8,11 @@
 #include "TemperatureController.h"
 #include "TemperatureLED.h"
 #include "ServoController.h"
+#include "TravelLED.h"
 
 // pin definitions
 #define temperatureColdPin 20
 #define temperatureHotPin 21
-#define temperatureLEDPin 22
 #define dialOxygenPin 23
 #define dialGForcePin 24
 #define dialPressurePin 25
@@ -34,7 +34,8 @@ Mosfet vapeFanMosfet = Mosfet(vapeFanMosfetPin);
 Mosfet fanMosfet = Mosfet(fanMosfetPin);
 Mosfet hairdryerMosfet = Mosfet(hairdryerMosfetPin);
 TemperatureController tempFan = TemperatureController(temperatureColdPin, temperatureHotPin);
-TemperatureLED tempLED = TemperatureLED(temperatureLEDPin);
+TemperatureLED tempLED = TemperatureLED();
+TravelLED travelLED = TravelLED();
 ServoController oxygenServo = ServoController(dialOxygenPin, 0, 100);
 ServoController gforceServo = ServoController(dialGForcePin, 0, 3);
 ServoController pressureServo = ServoController(dialPressurePin, 0, 1000, true);
