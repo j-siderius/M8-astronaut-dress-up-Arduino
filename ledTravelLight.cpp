@@ -36,9 +36,9 @@ void travelLED() {
 
   // set the LEDS to corresponding colors (incl followers)
   if (index < NUM_LEDS) leds[index].setRGB(255, 255, 255);
-  if (index > 0) leds[index - 1].setRGB(200, 200, 200);
-  if (index > 1) leds[index - 2].setRGB(150, 150, 150);
-  if (index > 2) leds[index - 3].setRGB(100, 100, 100);
+  if (index > 0) leds[index - 1].setRGB(100, 100, 100);
+  if (index > 1) leds[index - 2].setRGB(50, 50, 50);
+  if (index > 2) leds[index - 3].setRGB(25, 25, 25);
 
   // increase the index if we did not finish the strip yet + tail length
   if (index < NUM_LEDS + 3) index++;
