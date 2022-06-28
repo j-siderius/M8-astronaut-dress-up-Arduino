@@ -1,6 +1,4 @@
-/*
-This program handles the thermometer leds
-*/
+#pragma once
 
 #include <FastLED.h>
 #include "Timer.h"

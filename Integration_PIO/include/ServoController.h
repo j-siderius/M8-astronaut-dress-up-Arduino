@@ -2,6 +2,7 @@
 
 #include <Arduino.h>
 #include <Servo.h>
+#include "Timer.h"
 
 class ServoController
 {
@@ -35,14 +36,16 @@ public:
     @param  minValue    Minimal expected value to be passed to this servo / dial
     @param  maxValue    Maximal expected value to be passed to this servo / dial
     @param  log         Boolean for enabling log mapping
+    @warning    If logarithmic scale is enabled, the minValue will be put to 0!
     @return ServoController object
     */
     ServoController(int pin, float minValue, float maxValue, bool log)
     {
         this->pin = pin;
-        this->minValue = minValue;
-        this->maxValue = maxValue;
         this->logScale = log;
+        if (logScale) this->minValue = 0;
+        else this->minValue = minValue;
+        this->maxValue = maxValue;
         servo.attach(pin);
         servo.write(90);
     }
@@ -50,17 +53,26 @@ public:
     /*!
     @brief  Move the servo to specified position
     @param  value   Input value, will be mapped according to the min- and max value
-    @warning    When using logaritmic scaling, minValue should be above 0
     */
     void move(float value)
     {
         if (!logScale)
         {
+            // normal linear mapping
             int position = map(value, minValue, maxValue, 0, 180);
             servo.write(position);
         } else {
+            // logarithmic mapping
             int position = log(value + 1) / log(maxValue) * 180;
             servo.write(position);
         }
+    }
+
+    /*!
+    @brief  Randomly jitter the servo
+    @param  duration   Duration that the jitter should play
+    */
+    void jitter(int duration) {
+        // TODO: implement random jitter program (e.g. for launch)
     }
 };

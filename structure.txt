@@ -1,4 +1,0 @@
-class Servo
-    Servo(int pin, int minRange, int maxRange)
-    move(float value)
-    jitter()
