@@ -9,6 +9,7 @@
 #include "TemperatureLED.h"
 #include "ServoController.h"
 #include "TravelLED.h"
+#include "FireRing.h"
 
 // pin definitions
 #define temperatureColdPin 20
@@ -36,6 +37,7 @@ Mosfet hairdryerMosfet = Mosfet(hairdryerMosfetPin);
 TemperatureController tempFan = TemperatureController(temperatureColdPin, temperatureHotPin);
 TemperatureLED tempLED = TemperatureLED();
 TravelLED travelLED = TravelLED();
+FireRing fireLED = FireRing();
 ServoController oxygenServo = ServoController(dialOxygenPin, 0, 100);
 ServoController gforceServo = ServoController(dialGForcePin, 0, 3);
 ServoController pressureServo = ServoController(dialPressurePin, 0, 1000, true);

@@ -28,12 +28,15 @@ public:
     FastLED.clear(true);
   }
 
-  
-  void Travelrun(bool launchConfirm)
+  /*!
+  @brief Runs the fire ring and updates if it is time
+  */
+  void run()
   {
-    // check if the travelLED is active and then check if we can update it
-    if (launchConfirm)
-      travelLEDtimer.runCheck(millis());
+    if (travelLEDtimer.check(millis()))
+    {
+      travelLED();
+    }
   }
 
   void travelLED()

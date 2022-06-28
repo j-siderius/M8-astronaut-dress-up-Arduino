@@ -11,10 +11,9 @@ class FireRing
 private:
     //  initialize LED array
     CRGB leds[ringLEDnr];
-    Timer ledFireTimer = Timer(100, ledFire);
+    Timer ledFireTimer = Timer(100);
 
 public:
-
     /*!
     @brief  Constructor for the Fire Ring
     @note   dataPin cannot be defined in the constructor, do that in the class!!
@@ -24,6 +23,14 @@ public:
     {
         // initialize LEDs
         FastLED.addLeds<NEOPIXEL, ringLEDPin>(leds, ringLEDnr);
+        FastLED.clear(true);
+    }
+
+    /*!
+    @brief  Initializes the colours for the fire
+    */
+    void initFire()
+    {
         // give each LED a starting color
         for (int i = 0; i < ringLEDnr; i++)
         {
@@ -32,9 +39,6 @@ public:
             // set LED to default red and random green component
             leds[i].setRGB(255, g, 0);
         }
-
-        FastLED.clear(true);
-        // show LEDs
         FastLED.show();
     }
 
@@ -43,8 +47,10 @@ public:
     */
     void run()
     {
-        unsigned long curTime = millis();
-        ledFireTimer.runCheck(curTime);
+        if (ledFireTimer.check(millis()))
+        {
+            ledFire();
+        }
     }
 
     /*!
