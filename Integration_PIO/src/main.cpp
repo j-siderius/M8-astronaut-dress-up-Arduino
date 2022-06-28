@@ -11,6 +11,7 @@
 #include "TravelLED.h"
 #include "FireRing.h"
 #include "Multiplexer.h"
+#include "GeneralLighting.h"
 
 // pin definitions
 // TODO: CHANGE THESE TO ACTUAL PIN DEFINITIONS
@@ -29,6 +30,8 @@
 #define multiplexerReadPin1 33
 #define multiplexerReadPin2 34
 #define multiplexerReadPin3 35
+#define humidifierMosfetPin 36
+#define smellMosfetPin 37
 
 // object definitions
 // WARNING: LCD implementation currently in main due to incompatibility and errors
@@ -42,10 +45,13 @@ Mosfet vapeMosfet = Mosfet(vapeMosfetPin);
 Mosfet vapeFanMosfet = Mosfet(vapeFanMosfetPin);
 Mosfet fanMosfet = Mosfet(fanMosfetPin);
 Mosfet hairdryerMosfet = Mosfet(hairdryerMosfetPin);
+Mosfet humidifierMosfet = Mosfet(humidifierMosfetPin);
+Mosfet smellMosfer = Mosfet(smellMosfetPin);
 TemperatureController tempFan = TemperatureController(temperatureColdPin, temperatureHotPin);
 TemperatureLED tempLED = TemperatureLED();
 TravelLED travelLED = TravelLED();
 FireRing fireLED = FireRing();
+GeneralLight generalLED = GeneralLight();
 ServoController oxygenServo = ServoController(dialOxygenPin, 0, 100);
 ServoController gforceServo = ServoController(dialGForcePin, 0, 3);
 ServoController pressureServo = ServoController(dialPressurePin, 0, 1000, true);

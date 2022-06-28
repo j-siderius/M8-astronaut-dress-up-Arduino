@@ -29,7 +29,7 @@ public:
   }
 
   /*!
-  @brief Runs the fire ring and updates if it is time
+  @brief Runs the travelTimer and updates if it is time
   */
   void run()
   {
@@ -39,6 +39,9 @@ public:
     }
   }
 
+  /*!
+  @brief  update the Travel LED
+  */
   void travelLED()
   {
     // turn all LEDS off
