@@ -12,6 +12,7 @@
 #include "FireRing.h"
 #include "Multiplexer.h"
 #include "GeneralLighting.h"
+#include "PlanetDetector.h"
 
 // pin definitions
 // TODO: CHANGE THESE TO ACTUAL PIN DEFINITIONS
@@ -57,6 +58,7 @@ ServoController gforceServo = ServoController(dialGForcePin, 0, 3);
 ServoController pressureServo = ServoController(dialPressurePin, 0, 1000, true);
 Multiplexer multiplexer8 = Multiplexer(multiplexerSelectPin1, multiplexerSelectPin2, multiplexerSelectPin3, multiplexerReadPin1, 8);
 Multiplexer multiplexer16 = Multiplexer(multiplexerSelectPin1, multiplexerSelectPin2, multiplexerSelectPin3, multiplexerReadPin2, multiplexerReadPin3, 16);
+PlanetDetector detector = PlanetDetector(100);
 
 void setup() {
   Serial.begin(9600);  
