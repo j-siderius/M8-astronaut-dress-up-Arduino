@@ -10,8 +10,10 @@
 #include "ServoController.h"
 #include "TravelLED.h"
 #include "FireRing.h"
+#include "Multiplexer.h"
 
 // pin definitions
+// TODO: CHANGE THESE TO ACTUAL PIN DEFINITIONS
 #define temperatureColdPin 20
 #define temperatureHotPin 21
 #define dialOxygenPin 23
@@ -21,6 +23,12 @@
 #define vapeFanMosfetPin 27
 #define fanMosfetPin 28
 #define hairdryerMosfetPin 29
+#define multiplexerSelectPin1 30
+#define multiplexerSelectPin2 31
+#define multiplexerSelectPin3 32
+#define multiplexerReadPin1 33
+#define multiplexerReadPin2 34
+#define multiplexerReadPin3 35
 
 // object definitions
 // WARNING: LCD implementation currently in main due to incompatibility and errors
@@ -41,6 +49,8 @@ FireRing fireLED = FireRing();
 ServoController oxygenServo = ServoController(dialOxygenPin, 0, 100);
 ServoController gforceServo = ServoController(dialGForcePin, 0, 3);
 ServoController pressureServo = ServoController(dialPressurePin, 0, 1000, true);
+Multiplexer multiplexer8 = Multiplexer(multiplexerSelectPin1, multiplexerSelectPin2, multiplexerSelectPin3, multiplexerReadPin1, 8);
+Multiplexer multiplexer16 = Multiplexer(multiplexerSelectPin1, multiplexerSelectPin2, multiplexerSelectPin3, multiplexerReadPin2, multiplexerReadPin3, 16);
 
 void setup() {
   Serial.begin(9600);  
@@ -49,7 +59,7 @@ void setup() {
 }
 
 void loop() {
-  
+
 }
 
 void LCDinit() {
