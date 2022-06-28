@@ -112,23 +112,24 @@ public:
       @returns Char array of variable from serial
       @throws Timeout when not enough bytes are received within the byteTimeout time
     */
-    char* readChar(int numberChars)
-    {
-        int timeOut = byteTimeout * numberChars;
-        char buf[numberChars];
-        delay(2);
+    // TODO: fix if time
+    // char readChar(int numberChars)
+    // {
+    //     int timeOut = byteTimeout * numberChars;
+    //     char buf[numberChars];
+    //     delay(2);
 
-        Serial.setTimeout(timeOut);
+    //     Serial.setTimeout(timeOut);
 
-        for (int i = 0; i < numberChars; i++)
-        {
-            buf[i] = Serial.read();
-        }
+    //     for (int i = 0; i < numberChars; i++)
+    //     {
+    //         buf[i] = Serial.read();
+    //     }
 
-        Serial.setTimeout(1000);
+    //     Serial.setTimeout(1000);
 
-        return buf;
-    }
+    //     return buf;
+    // }
 
     /*!
       @brief  Reads the boolean from the serial port and returns it
