@@ -5,13 +5,21 @@
 #include "Timer.h"
 #include "Mosfet.h"
 #include "SerialComm.h"
+#include "TemperatureController.h"
 
+// pin definitions
+#define temperatureColdPin 20
+#define temperatureHotPin 20
+
+// object definitions
 Serialcomm comm;
 // WARNING: LCD implementation currently in main due to incompatibility and errors
 // TODO: fix if time
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 String planetName;
 void LCDinit(), LCDupdate();
+// LCD implementation ^^^
+TemperatureController temp = TemperatureController(temperatureColdPin, temperatureHotPin);
 
 void setup() {
   Serial.begin(9600);  
@@ -20,6 +28,11 @@ void setup() {
 }
 
 void loop() {
+  delay(1000);
+  temp.setTemperature(0);
+  temp.tempOn();
+  delay(1000);
+  temp.tempOff();
   
 }
 
