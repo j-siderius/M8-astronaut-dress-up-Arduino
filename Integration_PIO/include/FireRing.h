@@ -23,7 +23,7 @@ public:
     {
         // initialize LEDs
         FastLED.addLeds<NEOPIXEL, ringLEDPin>(leds, ringLEDnr);
-        FastLED.clear(true);
+        FastLED.clear();
     }
 
     /*!

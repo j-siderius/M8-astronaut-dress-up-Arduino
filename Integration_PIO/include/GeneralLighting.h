@@ -30,7 +30,7 @@ public:
   GeneralLight()
   {
     FastLED.addLeds<NEOPIXEL, generalLEDPin>(leds, generalLEDNr);
-    FastLED.clear(true);
+    FastLED.clear();
   }
 
   /*!

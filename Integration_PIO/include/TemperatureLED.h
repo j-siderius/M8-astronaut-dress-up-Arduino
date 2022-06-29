@@ -21,7 +21,7 @@ public:
     TemperatureLED()
     {
         FastLED.addLeds<NEOPIXEL, tempLEDPin>(leds, tempLEDnr);
-        FastLED.clear(true);
+        FastLED.clear();
     }
 
     /*!

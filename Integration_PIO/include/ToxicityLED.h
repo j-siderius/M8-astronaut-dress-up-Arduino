@@ -19,8 +19,8 @@ class ToxicityLED {
   /**
    * @brief Construct a new Toxicity L E D object
    * 
-   * @param CO2Pos 
-   * @param N2Pos 
+   * @param CO2Pos Value for CO2
+   * @param N2Pos etc
    * @param O2Pos 
    * @param CH4Pos 
    * @param H2Pos 
@@ -35,7 +35,7 @@ class ToxicityLED {
       this->HEPos = HEPos;
 
       FastLED.addLeds<NEOPIXEL, toxicityLEDPin>(leds, toxicityLEDNr);
-      FastLED.clear(true);
+      FastLED.clear();
     }
 
     void displayToxicity() {

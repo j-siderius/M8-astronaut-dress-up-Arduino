@@ -29,7 +29,7 @@ public:
     this->maxTime = maxTime;
 
     FastLED.addLeds<NEOPIXEL, travelLEDPin>(leds, travelLEDnr);
-    FastLED.clear(true);
+    FastLED.clear();
   }
 
   /*!
