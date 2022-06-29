@@ -3,7 +3,7 @@
 #include <FastLED.h>
 
 // define stip parameters
-#define generalLEDPin 35
+#include "PINS.h"
 #define generalLEDNr 150
 
 class GeneralLight

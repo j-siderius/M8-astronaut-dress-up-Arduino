@@ -2,7 +2,7 @@
 
 #include <FastLED.h>
 
-#define tempLEDPin 28
+#include "PINS.h"
 #define tempLEDnr 16
 
 class TemperatureLED

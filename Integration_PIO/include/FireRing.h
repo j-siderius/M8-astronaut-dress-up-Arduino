@@ -3,7 +3,7 @@
 #include "Timer.h"
 #include <FastLED.h>
 
-#define ringLEDPin 31
+#include "PINS.h"
 #define ringLEDnr 20
 
 class FireRing

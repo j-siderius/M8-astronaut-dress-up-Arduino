@@ -6,7 +6,7 @@
 #include "Timer.h"
 
 // define strip parameters
-#define travelLEDPin 31
+#include "PINS.h"
 #define travelLEDnr 20
 
 class TravelLED
