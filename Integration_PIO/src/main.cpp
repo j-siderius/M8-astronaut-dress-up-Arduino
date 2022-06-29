@@ -15,29 +15,28 @@
 #include "PlanetDetector.h"
 
 // pin definitions
-// TODO: CHANGE THESE TO ACTUAL PIN DEFINITIONS
-#define temperatureColdPin D2
-#define temperatureHotPin D3
-#define dialOxygenPin D16
-#define dialGForcePin D14
-#define dialPressurePin D15
-#define vapeMosfetPin D5
-#define vapeFanMosfetPin D4
-#define multiplexerSelectPin1 D8
-#define multiplexerSelectPin2 D7
-#define multiplexerSelectPin3 D6
+#define temperatureColdPin 2
+#define temperatureHotPin 3
+#define dialOxygenPin 16
+#define dialGForcePin 14
+#define dialPressurePin 15
+#define vapeMosfetPin 5
+#define vapeFanMosfetPin 4
+#define multiplexerSelectPin1 8
+#define multiplexerSelectPin2 7
+#define multiplexerSelectPin3 6
 #define multiplexerReadPin1 A0
 #define multiplexerReadPin2 A1
 #define multiplexerReadPin3 A2
 #define humidifierMosfetPin A3
 #define smellMosfetPin A4
-#define buttonLEDPin D17
-#define buttonSwitchPin D18
-//#define generalLEDPin D9
-//#define ringLEDPin D10
-//#define travelLEDPin D11
-//#define toxicityLEDPin D12
-//#define tempLEDPin D13
+#define buttonLEDPin 17
+#define buttonSwitchPin 18
+//#define generalLEDPin 9
+//#define ringLEDPin 10
+//#define travelLEDPin 11
+//#define toxicityLEDPin 12
+//#define tempLEDPin 13
 
 // object definitions
 // WARNING: LCD implementation currently in main due to incompatibility and errors
