@@ -138,6 +138,7 @@ public:
     void start()
     {
         this->runTimer = true;
+        this->previousTime = millis();
     }
 
     /*!
