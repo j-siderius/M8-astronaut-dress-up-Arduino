@@ -11,7 +11,7 @@ const int multiplexerSelectPin1 = 8;
 const int multiplexerSelectPin2 = 7;
 const int multiplexerSelectPin3 = 6;
 const int buttonLEDPin = 17;
-const int buttonSwitchPin = 18;
+const int buttonSwitchPin = 18;  // pin 18 needed for interrupt sequence
 
 const int generalLEDPin = 9;
 const int ringLEDPin = 10;
