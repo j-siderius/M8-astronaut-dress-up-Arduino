@@ -53,6 +53,10 @@ public:
         return oxygenGranular;
     }
 
+    int getPlanetOxygen() {
+        return elements[3];
+    }
+
     bool getGasGiant()
     {
         return gasGiantGranular;
