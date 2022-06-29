@@ -34,10 +34,10 @@ public:
 
   /*!
   @brief Updates the travel time according to the distance
-  @param  distance Distance to the planet
+  @param  time Time it takes to reach to the planet
   */
-  void setTravelTime(int distance) {
-    int delay = (log(distance + 1) / log(5000) * maxTime) / 20;
+  void setTravelTime(int time) {
+    int delay = time/24;
     travelLEDtimer.changeDelay(delay);
   }
 
