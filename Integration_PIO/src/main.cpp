@@ -13,6 +13,7 @@
 #include "Multiplexer.h"
 #include "GeneralLighting.h"
 #include "PlanetDetector.h"
+#include "ToxicityLED.h"
 
 // pin definitions
 #include "PINS.h"
@@ -34,6 +35,7 @@ TemperatureLED tempLED = TemperatureLED();
 TravelLED travelLED = TravelLED(8000);
 FireRing fireLED = FireRing();
 GeneralLight generalLED = GeneralLight();
+ToxicityLED toxicLED = ToxicityLED(6, 5, 4, 1, 3, 2);
 ServoController oxygenServo = ServoController(dialOxygenPin, 0, 100);
 ServoController gforceServo = ServoController(dialGForcePin, 0, 3);
 ServoController pressureServo = ServoController(dialPressurePin, 0, 1000, true);
