@@ -9,7 +9,7 @@ class PlanetDetector {
     private:
         VL53L0X sensor;
         uint16_t distance;
-        int range;
+        uint16_t range;
 
     public:
         /*!
