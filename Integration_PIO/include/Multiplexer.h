@@ -11,6 +11,9 @@ private:
     int arraySize;
     float inputs8[8];
     float inputs16[16];
+    int changeThreshold;
+    bool changed = false;
+    float calibrationValues[16] = {750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750};
 
 public:
     /*!
@@ -19,16 +22,17 @@ public:
     @param  mPin2   Multiplexer pin 2
     @param  mPin3   Multiplexer pin 3
     @param  aPin    Multiplexer read pin
-    @param  arraySize   Size of multiplexer array, should be 8 or 16
+    @param  changeThreshold When a change is detected
     @return Multiplexer object
     */
-    Multiplexer(int mPin1, int mPin2, int mPin3, int aPin, int arraySize)
+    Multiplexer(int mPin1, int mPin2, int mPin3, int aPin, int changeThreshold)
     {
         this->selectPins[0] = mPin1;
         this->selectPins[1] = mPin2;
         this->selectPins[2] = mPin3;
         this->readPin1 = aPin;
-        this->arraySize = arraySize;
+        this->arraySize = 8;
+        this->changeThreshold = changeThreshold;
 
         pinMode(selectPins[0], OUTPUT);
         pinMode(selectPins[1], OUTPUT);
@@ -46,22 +50,18 @@ public:
     @param  mPin3   Multiplexer pin 3
     @param  aPin1    Multiplexer read pin 1
     @param  aPin2    Multiplexer read pin 2
-    @param  arraySize   Size of multiplexer array, should be 8 or 16!
+    @param  changeThreshold When a change is detected
     @return Multiplexer object
     */
-    Multiplexer(int mPin1, int mPin2, int mPin3, int aPin1, int aPin2, int arraySize)
+    Multiplexer(int mPin1, int mPin2, int mPin3, int aPin1, int aPin2, int changeThreshold)
     {
         this->selectPins[0] = mPin1;
         this->selectPins[1] = mPin2;
         this->selectPins[2] = mPin3;
         this->readPin1 = aPin1;
         this->readPin2 = aPin2;
-        if (arraySize == 8 || arraySize == 16)
-        {
-            this->arraySize = arraySize;
-        } else {
-            return;
-        }
+        this->arraySize = 16;
+        this->changeThreshold = changeThreshold;
 
         pinMode(selectPins[0], OUTPUT);
         pinMode(selectPins[1], OUTPUT);
@@ -82,34 +82,69 @@ public:
         {
             for (byte pin = 0; pin <= 7; pin++)
             {
-                selectMuxPin(pin);                   // Select pin
-                inputs8[pin] = analogRead(readPin1); // and read analog value
+                selectMuxPin(pin);                        // Select pin
+                float measurement = analogRead(readPin1); // and read analog value
+                float curValue = inputs8[pin];
+                // check if the change is significant
+                if (measurement > curValue + changeThreshold || measurement < curValue - changeThreshold)
+                {
+                    inputs8[pin] = measurement;
+                    changed = true;
+                }
             }
         }
         else if (arraySize == 16)
         {
             for (byte pin = 0; pin <= 7; pin++)
             {
-                selectMuxPin(pin);                        // Select pin
-                inputs16[pin] = analogRead(readPin1);     // and read analog value
-                inputs16[pin + 8] = analogRead(readPin2); // and read analog value
+                selectMuxPin(pin); // Select pin
+
+                float measurement1 = analogRead(readPin1); // and read analog value
+                float curValue1 = inputs16[pin];
+                // check if the change is significant
+                if (measurement1 > curValue1 + changeThreshold || measurement1 < curValue1 - changeThreshold)
+                {
+                    inputs8[pin] = measurement1;
+                    changed = true;
+                }
+
+                float measurement2 = analogRead(readPin2); // and read analog value
+                float curValue2 = inputs16[pin + 8];
+                // check if the change is significant
+                if (measurement2 > curValue2 + changeThreshold || measurement2 < curValue2 - changeThreshold)
+                {
+                    inputs8[pin + 2] = measurement2;
+                    changed = true;
+                }
             }
         }
     }
 
     /*!
     @brief  Function to fetch the values of the multiplexer array
-    @return Array of LDR values, based on the arraySize set in constructor, if arraySize is not supported, returns -1
+    @return Array of LDR values, boolean gives either HIGH or LOW
     */
-    float *readValues()
+    bool readValues()
     {
         if (arraySize == 8)
         {
-            return inputs8;
+            changed = false;
+            bool values[8];
+            for (int i = 0; i < 8; i++) {
+                if (inputs8[i] > calibrationValues[i]) values[i] = true;
+                else values[i] = false;
+            }
+            return values;
         }
         else if (arraySize == 16)
         {
-            return inputs16;
+            changed = false;
+            bool values[16];
+            for (int i = 0; i < 16; i++) {
+                if (inputs16[i] > calibrationValues[i]) values[i] = true;
+                else values[i] = false;
+            }
+            return values;
         }
         else
         {
@@ -131,6 +166,28 @@ public:
                 digitalWrite(selectPins[i], HIGH);
             else
                 digitalWrite(selectPins[i], LOW);
+        }
+    }
+
+    /**
+     * @brief check if the array has changed since the last check
+     * @return true or false
+     */
+    bool hasChanged()
+    {
+        return changed;
+    }
+
+    /**
+     * @brief Set the Calibration Values of the multiplexer (should be in the middle of LOW and HIGH measurement)
+     * @param calibration  array of calibration values
+     * @note even if calibrating a 8x multiplexer, pass an array with 16 spots, just leave last 8 empty
+     */
+    void setCalibrationValues(float calibration[16])
+    {
+        for (int i = 0; i < 16; i++)
+        {
+            calibrationValues[i] = calibration[i];
         }
     }
 };
