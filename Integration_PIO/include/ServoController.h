@@ -11,6 +11,7 @@ private:
     float minValue, maxValue;
     Servo servo;
     bool logScale;
+    Timer servoDelay = Timer(100);
 
 public:
     /*!
@@ -43,8 +44,10 @@ public:
     {
         this->pin = pin;
         this->logScale = log;
-        if (logScale) this->minValue = 0;
-        else this->minValue = minValue;
+        if (logScale)
+            this->minValue = 0;
+        else
+            this->minValue = minValue;
         this->maxValue = maxValue;
         servo.attach(pin);
         servo.write(90);
@@ -61,7 +64,9 @@ public:
             // normal linear mapping
             int position = map(value, minValue, maxValue, 0, 180);
             servo.write(position);
-        } else {
+        }
+        else
+        {
             // logarithmic mapping
             int position = log(value + 1) / log(maxValue) * 180;
             servo.write(position);
@@ -70,9 +75,16 @@ public:
 
     /*!
     @brief  Randomly jitter the servo
-    @param  duration   Duration that the jitter should play
     */
-    void jitter(int duration) {
-        // TODO: implement random jitter program (e.g. for launch)
+    void jitter()
+    {
+        if (servoDelay.check(millis()))
+        {
+            // TODO: implement random jitter program (e.g. for launch)
+            int randomPosition = random(45, 135);
+            int randomDelay = random(50, 100);
+            servo.write(randomPosition);
+            servoDelay.changeDelay(randomDelay);
+        }
     }
 };
