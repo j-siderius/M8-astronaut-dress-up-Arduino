@@ -49,6 +49,7 @@ void turnOffEverything();
 // main variables
 bool planetSelected = false;
 bool launching = false;
+bool inSpace = false;
 bool landed = false;
 bool doorOpen = false;
 int launchSequenceIndex = 0;
@@ -146,6 +147,11 @@ void loop()
         }
         else
         {
+          // pre-launch
+          // TODO: change to earth values
+          oxygenServo.move(90);
+          pressureServo.move(10);
+          gforceServo.move(10);
         }
         break;
 
@@ -158,21 +164,24 @@ void loop()
         }
         else
         {
+          // launching
+          // TODO: test jitter
+          oxygenServo.jitter();
+          pressureServo.jitter();
+          gforceServo.jitter();
+
+          fireLED.run();
+          // add smoke etc
         }
         break;
       }
     }
     else
     {
+      turnOffEverything();
       launching = true;
       prelaunchTimer.start();
-      travelTimer.changeDelay(comm.getTravelTime());
       launchSequenceIndex = 0;
-      // Timer prelaunchTimer = Timer(5000);
-      // Timer ascensionTimer = Timer(5000);
-      // Timer travelTimer = Timer(0);
-      // Timer doorOpenTimer = Timer(2000);
-      // Timer deadOrAliveTimer = Timer(7000);
     }
 
     /*
@@ -185,6 +194,21 @@ void loop()
 
   // traveling
   case 2:
+    if (inSpace)
+    {
+      travelLED.run();
+    }
+    else
+    {
+      inSpace = true;
+      travelTimer.changeDelay(comm.getTravelTime());
+
+      // set dashboard to space
+      oxygenServo.move(0);
+      gforceServo.move(0);
+      pressureServo.move(0);
+    }
+
     /*
     - travel lighting
     - displaying space data (everything to 0 or whacky stuff)
@@ -197,7 +221,7 @@ void loop()
     {
       // display dashboard lights etc
 
-      if (doorOpen)  // if the door is open, display granular outputs
+      if (doorOpen) // if the door is open, display granular outputs
       {
         // granular outputs
       }
