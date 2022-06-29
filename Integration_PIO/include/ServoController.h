@@ -50,7 +50,7 @@ public:
             this->minValue = minValue;
         this->maxValue = maxValue;
         servo.attach(pin);
-        servo.write(90);
+        // servo.write(90);
     }
 
     /*!
