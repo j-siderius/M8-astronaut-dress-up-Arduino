@@ -4,7 +4,7 @@
 // include custom classes
 #include "Timer.h"
 #include "Mosfet.h"
-#include "SerialComm.h"
+#include "SerialController.h"
 #include "TemperatureController.h"
 #include "TemperatureLED.h"
 #include "ServoController.h"
@@ -45,11 +45,9 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 String planetName;
 void LCDinit(), LCDupdate();
 // LCD implementation ^^^
-Serialcomm comm;
+SerialController comm;
 Mosfet vapeMosfet = Mosfet(vapeMosfetPin);
 Mosfet vapeFanMosfet = Mosfet(vapeFanMosfetPin);
-Mosfet fanMosfet = Mosfet(fanMosfetPin);
-Mosfet hairdryerMosfet = Mosfet(hairdryerMosfetPin);
 Mosfet humidifierMosfet = Mosfet(humidifierMosfetPin);
 Mosfet smellMosfer = Mosfet(smellMosfetPin);
 TemperatureController tempFan = TemperatureController(temperatureColdPin, temperatureHotPin);
@@ -66,7 +64,7 @@ PlanetDetector detector = PlanetDetector(100);
 
 void setup() {
   Serial.begin(9600);  
-  comm = Serialcomm();
+  comm = SerialController();
   LCDinit();
 }
 
