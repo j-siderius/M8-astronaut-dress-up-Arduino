@@ -11,6 +11,8 @@ private:
     int arraySize;
     float inputs8[8];
     float inputs16[16];
+    bool values8[8];
+    bool values16[16];
     int changeThreshold;
     bool changed = false;
     float calibrationValues[16] = {750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750};
@@ -85,6 +87,7 @@ public:
                 selectMuxPin(pin);                        // Select pin
                 float measurement = analogRead(readPin1); // and read analog value
                 float curValue = inputs8[pin];
+
                 // check if the change is significant
                 if (measurement > curValue + changeThreshold || measurement < curValue - changeThreshold)
                 {
@@ -124,27 +127,25 @@ public:
     @brief  Function to fetch the values of the multiplexer array
     @return Array of LDR values, boolean gives either HIGH or LOW
     */
-    bool readValues()
+    bool *readValues()
     {
         if (arraySize == 8)
         {
             changed = false;
-            bool values[8];
             for (int i = 0; i < 8; i++) {
-                if (inputs8[i] > calibrationValues[i]) values[i] = true;
-                else values[i] = false;
+                if (inputs8[i] > calibrationValues[i]) values8[i] = true;
+                else values8[i] = false;
             }
-            return values;
+            return values8;
         }
         else if (arraySize == 16)
         {
             changed = false;
-            bool values[16];
             for (int i = 0; i < 16; i++) {
-                if (inputs16[i] > calibrationValues[i]) values[i] = true;
-                else values[i] = false;
+                if (inputs16[i] > calibrationValues[i]) values16[i] = true;
+                else values16[i] = false;
             }
-            return values;
+            return values16;
         }
         else
         {
