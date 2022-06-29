@@ -12,6 +12,7 @@ private:
     //  initialize LED array
     CRGB leds[ringLEDnr];
     Timer ledFireTimer = Timer(100);
+    bool initialized = false;
 
 public:
     /*!
@@ -47,6 +48,10 @@ public:
     */
     void run()
     {
+        if (!initialized) {
+            initFire();
+            initialized = true;
+        }
         if (ledFireTimer.check(millis()))
         {
             ledFire();
