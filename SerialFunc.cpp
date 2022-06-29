@@ -121,14 +121,26 @@ void funcPlanetData()
 // received bool to check if astronaut survives
 void funcAstronautSurvival()
 {
-    bool survival = comm.readBool();
+    String survival = comm.readLine();
     Serial.print("Astronaut survival: ");
     Serial.println(survival);
-    // processing survival
-    //
+    /*
+    Granular data: an array of 4 variables. Only used once the astronaut has landed on the planet
+    first value = toxicity; 0 = no toxic, 1 = toxic
+    second value = oxygen; 0 = no oxygen, 1 = oxygen
+    third value = temperature; 0 = cold, 1 = normal, 2 is hot
+    fourth value = gas giant; 0 = no gas giant, 1 = gas giant
+    For example: [0, 1, 2, 0]
+    */
+
+    byte toxicityGranular = survival.substring(1, 2)
+    byte oxygenGranular = survival.substring(2, 3)
+    byte temperatureGranular = survival.substring(3, 4)
+    byte gasGiantGranular =  survival.substring(4, 5)
+    
     comm.confirmReceived('S');
 }
-
+    
 // sends the planet array
 void funcPlanetArray()
 {
