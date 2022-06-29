@@ -15,7 +15,6 @@ private:
   int index = 0;
   CRGB leds[travelLEDnr];
   Timer travelLEDtimer = Timer(200);
-  int maxTime;
 
 public:
   /*!
@@ -24,10 +23,8 @@ public:
   @note   dataPin cannot be defined in the constructor, do that in the class!!
   @return TravelLED object
   */
-  TravelLED(int maxTime)
+  TravelLED()
   {
-    this->maxTime = maxTime;
-
     FastLED.addLeds<NEOPIXEL, travelLEDPin>(leds, travelLEDnr);
     FastLED.clear();
   }
