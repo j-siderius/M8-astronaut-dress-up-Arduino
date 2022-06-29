@@ -16,23 +16,28 @@
 
 // pin definitions
 // TODO: CHANGE THESE TO ACTUAL PIN DEFINITIONS
-#define temperatureColdPin 20
-#define temperatureHotPin 21
-#define dialOxygenPin 23
-#define dialGForcePin 24
-#define dialPressurePin 25
-#define vapeMosfetPin 26
-#define vapeFanMosfetPin 27
-#define fanMosfetPin 28
-#define hairdryerMosfetPin 29
-#define multiplexerSelectPin1 30
-#define multiplexerSelectPin2 31
-#define multiplexerSelectPin3 32
-#define multiplexerReadPin1 33
-#define multiplexerReadPin2 34
-#define multiplexerReadPin3 35
-#define humidifierMosfetPin 36
-#define smellMosfetPin 37
+#define temperatureColdPin D2
+#define temperatureHotPin D3
+#define dialOxygenPin D16
+#define dialGForcePin D14
+#define dialPressurePin D15
+#define vapeMosfetPin D5
+#define vapeFanMosfetPin D4
+#define multiplexerSelectPin1 D8
+#define multiplexerSelectPin2 D7
+#define multiplexerSelectPin3 D6
+#define multiplexerReadPin1 A0
+#define multiplexerReadPin2 A1
+#define multiplexerReadPin3 A2
+#define humidifierMosfetPin A3
+#define smellMosfetPin A4
+#define buttonLEDPin D17
+#define buttonSwitchPin D18
+//#define generalLEDPin D9
+//#define ringLEDPin D10
+//#define travelLEDPin D11
+//#define toxicityLEDPin D12
+//#define tempLEDPin D13
 
 // object definitions
 // WARNING: LCD implementation currently in main due to incompatibility and errors
