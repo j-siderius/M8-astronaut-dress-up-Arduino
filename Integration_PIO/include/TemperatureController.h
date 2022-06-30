@@ -19,7 +19,14 @@ public:
     {
         this->pinCold = pinCold;
         this->pinHot = pinHot;
+    }
 
+    /**
+     * @brief starting pins etc
+     *
+     */
+    void begin()
+    {
         pinMode(pinCold, OUTPUT);
         digitalWrite(pinCold, LOW);
         pinMode(pinHot, OUTPUT);
