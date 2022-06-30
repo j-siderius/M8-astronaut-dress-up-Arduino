@@ -43,14 +43,12 @@ ToxicityLED toxicLED = ToxicityLED(5, 4, 3, 0, 2, 1);
 // ServoController pressureServo = ServoController(dialPressurePin, 0, 1000, true);
 Multiplexer multiplexer8 = Multiplexer(multiplexerSelectPin1, multiplexerSelectPin2, multiplexerSelectPin3, multiplexerReadPin1, 20);
 Multiplexer multiplexer16 = Multiplexer(multiplexerSelectPin1, multiplexerSelectPin2, multiplexerSelectPin3, multiplexerReadPin2, multiplexerReadPin3, 20);
-// PlanetDetector detector = PlanetDetector(100);
+PlanetDetector detector = PlanetDetector(60);
 
-ServoThing oxyServo = ServoThing(dialOxygenPin);
-ServoThing presServo = ServoThing(dialPressurePin);
-ServoThing gfServo = ServoThing(dialGForcePin);
-
-// function definitions
-void turnOffEverything();
+// NEW servo controller
+ServoThing oxyServo = ServoThing(dialOxygenPin, 0, 100);
+ServoThing presServo = ServoThing(dialPressurePin, 0, 1000, true);
+ServoThing gfServo = ServoThing(dialGForcePin, 0, 3);
 
 // main variables
 bool planetSelected = false;
@@ -58,12 +56,11 @@ bool launching = false;
 bool inSpace = false;
 bool landed = false;
 bool doorOpen = false;
+bool ending = false;
 int launchSequenceIndex = 0;
 
 // Timers
-Timer prelaunchTimer = Timer(5000);
-Timer ascensionTimer = Timer(5000);
-Timer travelTimer = Timer(0);
+Timer prelaunchTimer = Timer(6250);
 Timer doorOpenTimer = Timer(3333);
 Timer deadOrAliveTimer = Timer(7000);
 // DURATIONS
@@ -73,246 +70,338 @@ Timer deadOrAliveTimer = Timer(7000);
 // opening hatch: 2s
 // death/alive: 7s
 
+// ----------------------------------------------- //
+
 void setup()
 {
   Serial.begin(9600);
-
   Serial.println("Starting...");
-
   comm = SerialController();
+  LCDinit();
+  LCDupdate("");
 
+  // initialize the servos
+  gfServo.begin();
   oxyServo.begin();
   presServo.begin();
-  gfServo.begin();
+  gfServo.move(0);
+  oxyServo.move(0);
+  presServo.move(0);
 
-  travelLED.setTravelTime(12000);
+  // setup the button
+  pinMode(buttonLEDPin, OUTPUT);
+  pinMode(buttonSwitchPin, INPUT_PULLUP);
+
+  tempFan.begin();
+
+  // calibrate the multiplexers (1023 is not applicable)
+  int calib1[16] = {550, 495, 790, 460, 750, 625, 765, 400, 1023, 1023, 1023, 1023, 1023, 1023, 1023, 1023};
+  multiplexer8.setCalibrationValues(calib1);
+  int calib2[16] = {595, 700, 470, 345, 450, 550, 505, 420, 495, 1023, 465, 1023, 550, 1023, 1023, 1023};
+  multiplexer16.setCalibrationValues(calib2);
+
+  detector.begin();
+
+  // turnOffEverything();
+
+  // mosfets
+  vapeMosfet.begin();
+  vapeFanMosfet.begin();
+  humidifierMosfet.begin();
+  smellMosfet.begin();
 
   Serial.println("Initialized");
 }
 
+// ----------------------------------------------- //
+
 void loop()
 {
+  comm.updateSerial();
 
-  travelLED.run();
+  switch (comm.getFlowState())
+  {
+  // ---------- PLANET & ASTRONAUT SELECTION ---------- //
+  case 0:
+    // Serial.println("state 0 selected");
 
-  // Serial.print("MUX8: ");
-  // multiplexer8.NEWreadMux8(); 
-  // for (int i = 0; i < 8; i++)
-  // {
-  //   Serial.print("\t\t");
-  //   Serial.print(multiplexer8.values8bit[i]);
-  // }
-  // Serial.println();
+    LCDupdate(comm.getPlanetName());
 
-  // Serial.print("MUX16: ");
-  // multiplexer16.NEWreadMux16(); 
-  // for (int i = 0; i < 16; i++)
-  // {
-  //   Serial.print("\t");
-  //   Serial.print(multiplexer16.values16bit[i]);
-  // }
-  // Serial.println();
+    digitalWrite(buttonLEDPin, HIGH);
+
+    // --- PLANET SELECTION --- //
+    if (!planetSelected)
+    {
+
+      // --- PLANET CHECK --- //
+      multiplexer8.NEWreadMux8();
+      multiplexer8.NEWtransformValues8();
+
+      if (multiplexer8.hasChanged())
+      {
+        Serial.print("PA");
+        for (int i = 0; i < 8; i++)
+        {
+          Serial.print(multiplexer8.bools8bit[i]);
+        }
+        Serial.println();
+      }
+
+      // --- CHECK PLANET DETECTOR --- //
+      detector.readSensor();
+      // Serial.println(detector.distance);
+      if (detector.getPlanetDetected())
+        planetSelected = true; // if a planet is selected, save this
+    }
+
+    // --- ASTRONAUT SELECTION --- //
+    else
+    {
+      // --- CHECK LAUNCH BUTTON --- //
+      if (!digitalRead(buttonSwitchPin))
+      {
+        comm.sendChar('L'); // send launching command to Python (it determines if we actually launch or not)
+        comm.sendBool(true);
+      }
+
+      // --- ASTRONAUT CHECK --- //
+      multiplexer16.NEWreadMux16();
+      multiplexer16.NEWtransformValues16();
+
+      if (multiplexer16.hasChanged())
+      {
+        Serial.print("AA");
+        for (int i = 0; i < 16; i++)
+        {
+          Serial.print(multiplexer16.bools16bit[i]);
+        }
+        Serial.println();
+      }
+
+      // --- CHECK PLANET DETECTOR --- //
+      detector.readSensor();
+      // Serial.println(detector.distance);
+      if (!detector.getPlanetDetected())
+        planetSelected = false; // if a planet is selected, save this
+    }
+
+    /*
+    - general lighting guiding user
+    - button lighting up
+    - displaying accurate data of earth on dashboard
+    - also fog for gasgiant
+    - detecting planet!!!!!!!!
+    - detecting astronaut!!!!!!!
+    - the rest is off
+    */
+    break;
+
+  // ---------- LAUNCHING ---------- //
+  case 1:
+
+    if (launching)
+    {
+      switch (launchSequenceIndex)
+      {
+      // --- PRE LAUNCH --- //
+      case 0:
+
+        if (prelaunchTimer.check(millis()))
+        {
+          // move on to next step if timer has passed
+          launchSequenceIndex++;
+        }
+        else
+        {
+          // pre-launch
+          // Serial.println("pre-launch");
+        }
+        break;
+
+      // --- DURING LAUNCH / ASCENSION --- //
+      case 1:
+
+        // Serial.println("launching");
+        // TODO: test jitter
+        // oxygenServo.jitter();
+        // pressureServo.jitter();
+        // gforceServo.jitter();
+        oxyServo.move(0);
+        presServo.move(0);
+        gfServo.move(0);
+        tempLED.turnOffAll();
+
+        // run rocket animations
+        fireLED.run();
+        vapeFanMosfet.turnOn();
+        // vapeMosfet.turnOn();
+        break;
+      }
+    }
+
+    // --- FIRST CALL --- //
+    else
+    {
+      launching = true;
+      prelaunchTimer.start();
+      launchSequenceIndex = 0;
+
+      digitalWrite(buttonLEDPin, LOW);
+
+      // set dashboard to earth values
+      tempLED.setTemperature(15);
+      tempLED.turnOn();
+      oxyServo.move(90);
+      presServo.move(10);
+      gfServo.move(10);
+
+      Serial.println("state 1 selected");
+    }
+
+    /*
+    - start launch (fire led ring + smoke)!!!!!!
+    - disabling planet selection/astronaut selection
+    - displaying accurate data of earth on dashboard
+    - synchronizing: launchconfirm, travel time
+    */
+    break;
+
+  // ---------- TRAVELLING ---------- //
+  case 2:
+    if (inSpace)
+    {
+      travelLED.run();
+    }
+
+    // --- FIRST CALL --- //
+    else
+    {
+      inSpace = true;
+      travelLED.setTravelTime(comm.getTravelTime());
+      travelLED.turnOffAll();
+      Serial.println("state 2 selected");
+
+      // set dashboard to space values
+      fireLED.turnOffAll();
+      oxyServo.move(0);
+      gfServo.move(0);
+      presServo.move(0);
+
+      tempLED.setTemperature(-500);
+      tempLED.turnOn();
+
+      vapeFanMosfet.turnOff();
+      vapeMosfet.turnOff();
+    }
+
+    /*
+    - travel lighting
+    - displaying space data (everything to 0 or whacky stuff)
+    */
+    break;
+
+  // ---------- LANDING ---------- //
+  case 3:
+
+    if (landed)
+    {
+      // display dashboard lights etc
+      // Serial.println("landed");
+
+      if (doorOpen) // if the door is open, display granular outputs
+      {
+        // Serial.println("door open");
+
+        // granular outputs
+
+        tempFan.tempOn();
+
+        // mosfets
+        // smellMosfet.turnOn();
+        // humidifierMosfet.turnOn();
+      }
+
+      // check if the door has already opened
+      if (!doorOpen && doorOpenTimer.check(millis()))
+      {
+        doorOpen = true;
+      }
+    }
+
+    // --- FIRST CALL --- //
+    else
+    {
+      Serial.println("state 3 selected");
+      // we have landed, start door open timer
+      landed = true;
+      doorOpenTimer.start();
+
+      travelLED.turnOffAll();
+
+      // set dashboard outputs
+      oxyServo.move(comm.getPlanetOxygen());
+      gfServo.move(comm.getPlanetGForce());
+      presServo.move(comm.getPlanetPressure());
+
+      tempFan.setTemperature(comm.getGranularTemperature());
+
+      tempLED.setTemperature(comm.getPlanetTemperature());
+      tempLED.turnOn();
+
+      toxicLED.setPercentages(comm.getElements());
+      toxicLED.displayElements();
+    }
+
+    /*
+    - displaying accurate planet data
+    - displaying granular experience-of-astronaut-data
+    */
+    break;
+
+  // death
+  case 4:
+  // survived
+  case 5:
+  if (ending) {
+    // wait until reset 
+  } else {
+    // Serial.println("state 4 selected");
+    tempLED.turnOff();
+    tempFan.tempOff();
+    travelLED.turnOffAll();
+    toxicLED.turnOffElements();
+
+    planetSelected = false;
+    launching = false;
+    inSpace = false;
+    landed = false;
+    doorOpen = false;
+
+    vapeMosfet.turnOff();
+    vapeFanMosfet.turnOff();
+    humidifierMosfet.turnOff();
+    smellMosfet.turnOff();
+
+    digitalWrite(buttonLEDPin, LOW);
+
+    LCDupdate("");
+
+    fireLED.turnOffAll();
+    oxyServo.move(0);
+    gfServo.move(0);
+    presServo.move(0);
+
+    ending = true;
+  }
+
+    /*
+    - do nothing (all special shit gets done by python
+    */
+    break;
+  }
 }
 
-// void setup()
-// {
-//   Serial.begin(9600);
-//   Serial.println("Starting...");
-//   comm = SerialController();
-//   LCDinit();
-
-//   turnOffEverything();
-//   pinMode(buttonLEDPin, OUTPUT);
-
-//   Serial.println("Initialized");
-// }
-
-// void loop()
-// {
-//   comm.updateSerial();
-
-//   switch (comm.getFlowState())
-//   {
-//   // on earth
-//   case 0:
-//     turnOffEverything();
-
-//     LCDupdate("...");
-
-//     digitalWrite(buttonLEDPin, HIGH);
-
-//     if (!planetSelected)
-//     { // if no planet is currently selected
-//       if (multiplexer8.hasChanged())
-//       {                              // check if the multiplexer has changed
-//         char planetFuncDef[] = "PA"; // send the current planet values if they have changed
-//         comm.sendChars(planetFuncDef, sizeof(planetFuncDef));
-//         comm.sendBoolArray(multiplexer8.readValues(), sizeof(8));
-//       }
-//       if (detector.getPlanetDetected())
-//         planetSelected = true; // if a planet is selected, save this
-//     }
-//     else
-//     { // if a planet is selected
-//       if (digitalRead(buttonSwitchPin))
-//       {
-//         comm.sendChar('L'); // send launching command to Python
-//         comm.sendBool(true);
-//       }
-
-//       if (multiplexer16.hasChanged())
-//       {                              // check if the multiplexer has changed
-//         char planetFuncDef[] = "AA"; // send the current astronaut values if they have changed
-//         comm.sendChars(planetFuncDef, sizeof(planetFuncDef));
-//         comm.sendBoolArray(multiplexer16.readValues(), sizeof(16));
-//       }
-//     }
-
-//     /*
-//     - general lighting guiding user
-//     - button lighting up
-//     - displaying accurate data of earth on dashboard
-//     - also fog for gasgiant
-//     - detecting planet!!!!!!!!
-//     - detecting astronaut!!!!!!!
-//     - the rest is off
-//     */
-//     break;
-
-//   // launching
-//   case 1:
-
-//     if (launching)
-//     {
-//       switch (launchSequenceIndex)
-//       {
-//       case 0:
-//         // prelaunch
-//         if (prelaunchTimer.check(millis()))
-//         {
-//           ascensionTimer.start();
-//           launchSequenceIndex++;
-//         }
-//         else
-//         {
-//           // pre-launch
-//           // TODO: change to earth values
-//           oxygenServo.move(90);
-//           pressureServo.move(10);
-//           gforceServo.move(10);
-//         }
-//         break;
-
-//       case 1:
-//         // ascension
-//         if (ascensionTimer.check(millis()))
-//         {
-//           travelTimer.start();
-//           launchSequenceIndex++;
-//         }
-//         else
-//         {
-//           // launching
-//           // TODO: test jitter
-//           oxygenServo.jitter();
-//           pressureServo.jitter();
-//           gforceServo.jitter();
-
-//           fireLED.run();
-//           // add smoke etc
-//         }
-//         break;
-//       }
-//     }
-//     else
-//     {
-//       turnOffEverything();
-//       launching = true;
-//       prelaunchTimer.start();
-//       launchSequenceIndex = 0;
-//     }
-
-//     /*
-//     - start launch (fire led ring + smoke)!!!!!!
-//     - disabling planet selection/astronaut selection
-//     - displaying accurate data of earth on dashboard
-//     - synchronizing: launchconfirm, travel time
-//     */
-//     break;
-
-//   // traveling
-//   case 2:
-//     if (inSpace)
-//     {
-//       travelLED.run();
-//     }
-//     else
-//     {
-//       inSpace = true;
-//       travelTimer.changeDelay(comm.getTravelTime());
-
-//       // set dashboard to space
-//       oxygenServo.move(0);
-//       gforceServo.move(0);
-//       pressureServo.move(0);
-//     }
-
-//     /*
-//     - travel lighting
-//     - displaying space data (everything to 0 or whacky stuff)
-//     */
-//     break;
-
-//   // landed on planet
-//   case 3:
-//     if (landed)
-//     {
-//       // display dashboard lights etc
-
-//       if (doorOpen) // if the door is open, display granular outputs
-//       {
-//         // granular outputs
-//       }
-
-//       // check if the door has already opened
-//       if (!doorOpen && doorOpenTimer.check(millis()))
-//       {
-//         doorOpen = true;
-//       }
-//     }
-//     else
-//     {
-//       // we have landed, start door open timer
-//       landed = true;
-//       doorOpenTimer.start();
-
-//       // set dashboard outputs
-//       oxygenServo.move(comm.getPlanetOxygen());
-//       gforceServo.move(comm.getPlanetGForce());
-//       pressureServo.move(comm.getPlanetPressure());
-//     }
-
-//     /*
-//     - displaying accurate planet data
-//     - displaying granular experience-of-astronaut-data
-//     */
-//     break;
-
-//   // death
-//   case 4:
-//     /*
-//     - do nothing (all special shit gets done by python
-//     */
-//     break;
-
-//   // survived
-//   case 5:
-//     /*
-//     - do nothing (all special shit gets done by python
-//     */
-//     break;
-//   }
-// }
+// ------------ LCD functions ---------- //
 
 void LCDinit()
 {
@@ -338,22 +427,3 @@ void LCDupdate(String name)
   }
 }
 
-// void turnOffEverything()
-// {
-//   LCDupdate("");                  // updates the LCD to display no destination
-//   humidifierMosfet.turnOff();     // turn off the humidity
-//   smellMosfet.turnOff();          // turn off the smell
-//   vapeMosfet.turnOff();           // turn off the vape mosfet
-//   vapeFanMosfet.turnOff();        // turn off the vape fan
-//   tempFan.tempOff();              // turn off temperature output
-//   tempLED.turnOff();              // turn off the temperature LEDs
-//   generalLED.setBrightness(1, 0); // turn off all general LEDs
-//   generalLED.setBrightness(2, 0);
-//   generalLED.setBrightness(3, 0);
-//   generalLED.setBrightness(4, 0);
-//   toxicLED.setTotalBrightness(0); // turn off all toxicity LEDs
-//   // oxygenServo.move(0);            // set servos to 0 position
-//   // gforceServo.move(0);
-//   // pressureServo.move(0);
-//   digitalWrite(buttonLEDPin, LOW); // turn off the button LED
-// }
