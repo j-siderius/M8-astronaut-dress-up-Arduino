@@ -75,7 +75,7 @@ void setup()
 
   comm = SerialController();
 
-  pinMode(buttonSwitchPin, INPUT);
+  pinMode(buttonSwitchPin, INPUT_PULLUP);
   pinMode(buttonLEDPin, OUTPUT);
   digitalWrite(buttonLEDPin, LOW);
 
@@ -84,10 +84,7 @@ void setup()
 
 void loop()
 {
-  digitalWrite(buttonLEDPin, HIGH);
-  delay(1000);
-  digitalWrite(buttonLEDPin, LOW);
-  delay(1000);
+  digitalWrite(buttonLEDPin, !digitalRead(buttonSwitchPin));
 }
 
 // void setup()
