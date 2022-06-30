@@ -1,6 +1,8 @@
 #include <Arduino.h>
 #include "LiquidCrystal_I2C.h"
 
+#include "ServoThing.h"
+
 // include custom classes
 #include "Timer.h"
 #include "Mosfet.h"
@@ -36,12 +38,16 @@ TravelLED travelLED = TravelLED();
 FireRing fireLED = FireRing();
 // GeneralLight generalLED = GeneralLight();
 ToxicityLED toxicLED = ToxicityLED(5, 4, 3, 0, 2, 1);
-ServoController oxygenServo = ServoController(dialOxygenPin, 0, 100);
-ServoController gforceServo = ServoController(dialGForcePin, 0, 3);
-ServoController pressureServo = ServoController(dialPressurePin, 0, 1000, true);
+// ServoController oxygenServo = ServoController(dialOxygenPin, 0, 100);
+// ServoController gforceServo = ServoController(dialGForcePin, 0, 3);
+// ServoController pressureServo = ServoController(dialPressurePin, 0, 1000, true);
 Multiplexer multiplexer8 = Multiplexer(multiplexerSelectPin1, multiplexerSelectPin2, multiplexerSelectPin3, multiplexerReadPin1, 20);
 Multiplexer multiplexer16 = Multiplexer(multiplexerSelectPin1, multiplexerSelectPin2, multiplexerSelectPin3, multiplexerReadPin2, multiplexerReadPin3, 20);
 // PlanetDetector detector = PlanetDetector(100);
+
+ServoThing oxyServo = ServoThing(dialOxygenPin);
+ServoThing presServo = ServoThing(dialPressurePin);
+ServoThing gfServo = ServoThing(dialGForcePin);
 
 // function definitions
 void turnOffEverything();
@@ -75,6 +81,11 @@ void setup()
 
   comm = SerialController();
 
+  oxyServo.begin();
+  presServo.begin();
+  gfServo.begin();
+
+
   Serial.println("Initialized");
 }
 
@@ -89,6 +100,16 @@ void loop()
   }
   Serial.println();
 
+  oxyServo.move(150);
+  presServo.move(30);
+  delay(2500);
+  oxyServo.move(30);
+  gfServo.move(150);
+  delay(2500);
+  gfServo.move(30);
+  presServo.move(150);
+  delay(2500);
+
   // Serial.print("MUX16: ");
   // multiplexer16.NEWreadMux16(); 
   // for (int i = 0; i < 16; i++)
@@ -97,7 +118,6 @@ void loop()
   //   Serial.print(multiplexer16.values16bit[i]);
   // }
   // Serial.println();
-  delay(500);
 }
 
 // void setup()
