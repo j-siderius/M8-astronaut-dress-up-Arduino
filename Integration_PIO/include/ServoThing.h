@@ -63,13 +63,13 @@ public:
         {
             // normal linear mapping
             int position = map(value, minValue, maxValue, 0, 180);
-            servo.write(position);
+            servo.write(180-position);
         }
         else
         {
             // logarithmic mapping
             int position = log(value + 1) / log(maxValue) * 180;
-            servo.write(position);
+            servo.write(180-position);
         }
     }
 };
