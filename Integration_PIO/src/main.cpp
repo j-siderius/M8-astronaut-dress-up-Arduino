@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include <LiquidCrystal_I2C.h>
+#include "LiquidCrystal_I2C.h"
 
 // include custom classes
 #include "Timer.h"
@@ -78,6 +78,11 @@ void setup()
   pinMode(buttonSwitchPin, INPUT_PULLUP);
   pinMode(buttonLEDPin, OUTPUT);
   digitalWrite(buttonLEDPin, LOW);
+
+  LCDinit();
+  LCDupdate("Earth");
+  delay(5000);
+  LCDupdate("Mercury");
 
   Serial.println("Initialized");
 }
@@ -289,7 +294,7 @@ void loop()
 
 void LCDinit()
 {
-  lcd.begin(16, 2);
+  lcd.begin();
   lcd.backlight();
   lcd.clear();
 
