@@ -102,6 +102,7 @@ public:
     void funcPlanetName()
     {
         name = readLine();
+        if (name == "Earth") name = "";
         confirmReceived('N');
     }
 
@@ -151,7 +152,9 @@ public:
     {
         time = readInt(5);
         confirmReceived('T');
+        Serial.print("TravelTime received: "); Serial.println(time);
     }
+
     void funcAstronautSurvival()
     {
         String survival = readLine();
@@ -327,7 +330,7 @@ public:
     */
     void sendChar(char call)
     {
-        Serial.println(call); // TODO: check if LN is nescessary
+        Serial.print(call); // TODO: check if LN is nescessary
     }
 
     /*!
@@ -341,7 +344,7 @@ public:
         {
             Serial.print(calls[i]);
         }
-        Serial.println(); // TODO: check if this is nescessary
+        // Serial.println(); // TODO: check if this is nescessary
     }
 
     /*!
@@ -374,7 +377,7 @@ public:
     */
     void sendBoolArray(bool boolArray[], int arrLen)
     {
-        Serial.println(arrLen);
+        // Serial.println(arrLen);
         for (int i = 0; i < arrLen; i++)
         {
             Serial.print(boolArray[i]);
