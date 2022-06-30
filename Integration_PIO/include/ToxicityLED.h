@@ -60,26 +60,26 @@ public:
   // Turn off leds
   void turnOffElements()
   {
-    // FastLED.clear();
-    // leds[CO2Pos].r = 0;
-    // leds[N2Pos].r = 0;
-    // leds[O2Pos].r = 0;
-    // leds[CH4Pos].r = 0;
-    // leds[H2Pos].r = 0;
-    // leds[HEPos].r = 0;
-    // leds[CO2Pos].g = 0;
-    // leds[N2Pos].g = 0;
-    // leds[O2Pos].g = 0;
-    // leds[CH4Pos].g = 0;
-    // leds[H2Pos].g = 0;
-    // leds[HEPos].g = 0;
-    // leds[CO2Pos].b = 0;
-    // leds[N2Pos].b = 0;
-    // leds[O2Pos].b = 0;
-    // leds[CH4Pos].b = 0;
-    // leds[H2Pos].b = 0;
-    // leds[HEPos].b = 0;
-    // FastLED.show();
+    FastLED.clear();
+    leds[CO2Pos].r = 0;
+    leds[N2Pos].r = 0;
+    leds[O2Pos].r = 0;
+    leds[CH4Pos].r = 0;
+    leds[H2Pos].r = 0;
+    leds[HEPos].r = 0;
+    leds[CO2Pos].g = 0;
+    leds[N2Pos].g = 0;
+    leds[O2Pos].g = 0;
+    leds[CH4Pos].g = 0;
+    leds[H2Pos].g = 0;
+    leds[HEPos].g = 0;
+    leds[CO2Pos].b = 0;
+    leds[N2Pos].b = 0;
+    leds[O2Pos].b = 0;
+    leds[CH4Pos].b = 0;
+    leds[H2Pos].b = 0;
+    leds[HEPos].b = 0;
+    FastLED.show();
   }
 
   /**
