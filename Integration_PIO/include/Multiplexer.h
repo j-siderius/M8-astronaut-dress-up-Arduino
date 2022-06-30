@@ -15,12 +15,14 @@ private:
     bool values16[16];
     int changeThreshold;
     bool changed = false;
-    float calibrationValues[16] = {750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750};
+    int calibrationValues[16] = {750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750};
 
 public:
 
     int values8bit[8];
     int values16bit[16];
+    bool bools8bit[8];
+    bool bools16bit[16];
 
     /*!
     @brief  Constructor for the multiplexer class, define pins here
@@ -243,6 +245,20 @@ public:
         values16bit[15] = measurement2;
     }
 
+    void NEWtransformValues8() {
+        for (int i = 0; i < 8; i++) {
+            if (values8bit[i] > calibrationValues[i]) bools8bit[i] = true;
+            else bools8bit[i] = false;
+        }
+    }
+
+    void NEWtransformValues16() {
+        for (int i = 0; i < 16; i++) {
+            if (values16bit[i] > calibrationValues[i]) bools16bit[i] = true;
+            else bools16bit[i] = false;
+        }
+    }
+
     /*!
     @brief  Function to fetch the values of the multiplexer array
     @return Array of LDR values, boolean gives either HIGH or LOW
@@ -310,7 +326,7 @@ public:
      * @param calibration  array of calibration values
      * @note even if calibrating a 8x multiplexer, pass an array with 16 spots, just leave last 8 empty
      */
-    void setCalibrationValues(float calibration[16])
+    void setCalibrationValues(int calibration[16])
     {
         for (int i = 0; i < 16; i++)
         {
