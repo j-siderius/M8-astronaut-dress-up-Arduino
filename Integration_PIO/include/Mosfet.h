@@ -13,6 +13,13 @@ class Mosfet {
     */
     Mosfet(int pin) {
       this->pin = pin;
+    }
+
+/**
+ * @brief setup the pins
+ * 
+ */
+    void begin() {
       pinMode(pin, OUTPUT);
       digitalWrite(pin, LOW);
     }
