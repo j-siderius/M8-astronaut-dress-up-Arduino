@@ -1,10 +1,12 @@
-#pragma once
-
 #include <Arduino.h>
+
 #include <FastLED.h>
 
 #include "PINS.h"
 #define toxicityLEDNr 6
+
+int comp1[] = {10, 0, 20, 100, 0, 30};
+int comp2[] = {0, 0, 0, 1, 80, 19};
 
 class ToxicityLED
 {
@@ -14,9 +16,9 @@ private:
   int CO2Pos, N2Pos, O2Pos, CH4Pos, H2Pos, HEPos;
   int CO2Percent, N2Percent, O2Percent, CH4Percent, H2Percent, HEPercent;
   int brightnessPLED[6] = {1, 1, 1, 1, 1, 1};
-  int brightness = 0;
 
 public:
+  // Constructor
   ToxicityLED(int CO2Pos, int N2Pos, int O2Pos, int CH4Pos, int H2Pos, int HEPos)
   {
     this->CO2Pos = CO2Pos;
@@ -30,22 +32,61 @@ public:
     turnOffAll();
   }
 
-  void displayToxicity()
+  // Turn on leds
+  void displayElements()
   {
-    FastLED.clear();
+    turnOffAll();
     leds[CO2Pos].r = CO2Percent * brightnessPLED[0];
     leds[N2Pos].r = N2Percent * brightnessPLED[1];
     leds[O2Pos].r = O2Percent * brightnessPLED[2];
     leds[CH4Pos].r = CH4Percent * brightnessPLED[3];
     leds[H2Pos].r = H2Percent * brightnessPLED[4];
     leds[HEPos].r = HEPercent * brightnessPLED[5];
-    for (int i = 0; i < toxicityLEDNr; i++)
-    {
-      leds[i].subtractFromRGB(255 - brightness);
-    }
+    leds[CO2Pos].g = CO2Percent * brightnessPLED[0];
+    leds[N2Pos].g = N2Percent * brightnessPLED[1];
+    leds[O2Pos].g = O2Percent * brightnessPLED[2];
+    leds[CH4Pos].g = CH4Percent * brightnessPLED[3];
+    leds[H2Pos].g = H2Percent * brightnessPLED[4];
+    leds[HEPos].g = HEPercent * brightnessPLED[5];
+    leds[CO2Pos].b = CO2Percent * brightnessPLED[0];
+    leds[N2Pos].b = N2Percent * brightnessPLED[1];
+    leds[O2Pos].b = O2Percent * brightnessPLED[2];
+    leds[CH4Pos].b = CH4Percent * brightnessPLED[3];
+    leds[H2Pos].b = H2Percent * brightnessPLED[4];
+    leds[HEPos].b = HEPercent * brightnessPLED[5];
     FastLED.show();
   }
 
+  // Turn off leds
+  void turnOffElements()
+  {
+    // FastLED.clear();
+    // leds[CO2Pos].r = 0;
+    // leds[N2Pos].r = 0;
+    // leds[O2Pos].r = 0;
+    // leds[CH4Pos].r = 0;
+    // leds[H2Pos].r = 0;
+    // leds[HEPos].r = 0;
+    // leds[CO2Pos].g = 0;
+    // leds[N2Pos].g = 0;
+    // leds[O2Pos].g = 0;
+    // leds[CH4Pos].g = 0;
+    // leds[H2Pos].g = 0;
+    // leds[HEPos].g = 0;
+    // leds[CO2Pos].b = 0;
+    // leds[N2Pos].b = 0;
+    // leds[O2Pos].b = 0;
+    // leds[CH4Pos].b = 0;
+    // leds[H2Pos].b = 0;
+    // leds[HEPos].b = 0;
+    // FastLED.show();
+  }
+
+  /**
+   * @brief Set the Percentages object
+   * 
+   * @param percentages CO2, N2, O2, CH4, H2, HE
+   */
   void setPercentages(int percentages[6])
   {
     CO2Percent = percentages[0];
@@ -56,32 +97,21 @@ public:
     HEPercent = percentages[5];
   }
 
-  void setTotalBrightness(int bright)
-  {
-    brightness = bright;
-  }
-
-  void setGranular(int oxygen, int toxicity)
-  {
-    if (oxygen == 0)
-    {
+  /*
+  void setGranular(int oxygen, int toxicity) {
+    if (oxygen == 0) {
       O2Percent = 0;
     }
-    if (toxicity == 0)
-    {
+    if (toxicity == 0) {
       CO2Percent = 0;
       CH4Percent = 0;
     }
   }
-
-  int returnValue()
-  {
-    return (HEPercent);
-  }
+  */
 
   void turnOffAll()
   {
-    for (int i = 0; i < tempLEDnr; i++)
+    for (int i = 0; i < toxicityLEDNr; i++)
     {
       leds[i] = CRGB::Black;
     }
