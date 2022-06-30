@@ -12,7 +12,7 @@
 class TravelLED
 {
 private:
-  int index = travelLEDnr - 1;
+  int index = travelLEDnr - 2;
   CRGB leds[travelLEDnr];
   Timer travelLEDtimer = Timer(200);
   bool running = false;
@@ -31,11 +31,11 @@ public:
 
   /*!
   @brief Updates the travel time according to the distance
-  @param  time Time it takes to to the planet
+  @param  time Time it takes to to the planet in sec
   */
   void setTravelTime(int time)
   {
-    int delay = time / 24;
+    int delay = (time * 1000) / 21;
     travelLEDtimer.changeDelay(delay);
   }
 
