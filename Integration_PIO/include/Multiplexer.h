@@ -18,6 +18,10 @@ private:
     float calibrationValues[16] = {750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750};
 
 public:
+
+    int values8bit[8];
+    int values16bit[16];
+
     /*!
     @brief  Constructor for the multiplexer class, define pins here
     @param  mPin1   Multiplexer pin 1
@@ -123,6 +127,122 @@ public:
         }
     }
 
+    /**
+     * @brief reads the mux the new way, 8-bit
+     *
+     */
+    void NEWreadMux8()
+    {
+        int measurement;
+
+        digitalWrite(selectPins[0], LOW);
+        digitalWrite(selectPins[1], LOW);
+        digitalWrite(selectPins[2], LOW);
+        measurement = analogRead(readPin1);
+        values8bit[0] = measurement;
+        digitalWrite(selectPins[0], LOW);
+        digitalWrite(selectPins[1], LOW);
+        digitalWrite(selectPins[2], HIGH);
+        measurement = analogRead(readPin1);
+        values8bit[1] = measurement;
+        digitalWrite(selectPins[0], LOW);
+        digitalWrite(selectPins[1], HIGH);
+        digitalWrite(selectPins[2], LOW);
+        measurement = analogRead(readPin1);
+        values8bit[2] = measurement;
+        digitalWrite(selectPins[0], LOW);
+        digitalWrite(selectPins[1], HIGH);
+        digitalWrite(selectPins[2], HIGH);
+        measurement = analogRead(readPin1);
+        values8bit[3] = measurement;
+        digitalWrite(selectPins[0], HIGH);
+        digitalWrite(selectPins[1], LOW);
+        digitalWrite(selectPins[2], LOW);
+        measurement = analogRead(readPin1);
+        values8bit[4] = measurement;
+        digitalWrite(selectPins[0], HIGH);
+        digitalWrite(selectPins[1], LOW);
+        digitalWrite(selectPins[2], HIGH);
+        measurement = analogRead(readPin1);
+        values8bit[5] = measurement;
+        digitalWrite(selectPins[0], HIGH);
+        digitalWrite(selectPins[1], HIGH);
+        digitalWrite(selectPins[2], LOW);
+        measurement = analogRead(readPin1);
+        values8bit[6] = measurement;
+        digitalWrite(selectPins[0], HIGH);
+        digitalWrite(selectPins[1], HIGH);
+        digitalWrite(selectPins[2], HIGH);
+        measurement = analogRead(readPin1);
+        values8bit[7] = measurement;
+    }
+
+    /**
+     * @brief reads the mux the new way, 16-bit
+     *
+     */
+    void NEWreadMux16()
+    {
+        int measurement1, measurement2;
+
+        digitalWrite(selectPins[0], LOW);
+        digitalWrite(selectPins[1], LOW);
+        digitalWrite(selectPins[2], LOW);
+        measurement1 = analogRead(readPin1);
+        values16bit[0] = measurement1;
+        measurement2 = analogRead(readPin2);
+        values16bit[8] = measurement2;
+        digitalWrite(selectPins[0], LOW);
+        digitalWrite(selectPins[1], LOW);
+        digitalWrite(selectPins[2], HIGH);
+        measurement1 = analogRead(readPin1);
+        values16bit[1] = measurement1;
+        measurement2 = analogRead(readPin2);
+        values16bit[9] = measurement2;
+        digitalWrite(selectPins[0], LOW);
+        digitalWrite(selectPins[1], HIGH);
+        digitalWrite(selectPins[2], LOW);
+        measurement1 = analogRead(readPin1);
+        values16bit[2] = measurement1;
+        measurement2 = analogRead(readPin2);
+        values16bit[10] = measurement2;
+        digitalWrite(selectPins[0], LOW);
+        digitalWrite(selectPins[1], HIGH);
+        digitalWrite(selectPins[2], HIGH);
+        measurement1 = analogRead(readPin1);
+        values16bit[3] = measurement1;
+        measurement2 = analogRead(readPin2);
+        values16bit[11] = measurement2;
+        digitalWrite(selectPins[0], HIGH);
+        digitalWrite(selectPins[1], LOW);
+        digitalWrite(selectPins[2], LOW);
+        measurement1 = analogRead(readPin1);
+        values16bit[4] = measurement1;
+        measurement2 = analogRead(readPin2);
+        values16bit[12] = measurement2;
+        digitalWrite(selectPins[0], HIGH);
+        digitalWrite(selectPins[1], LOW);
+        digitalWrite(selectPins[2], HIGH);
+        measurement1 = analogRead(readPin1);
+        values16bit[5] = measurement1;
+        measurement2 = analogRead(readPin2);
+        values16bit[13] = measurement2;
+        digitalWrite(selectPins[0], HIGH);
+        digitalWrite(selectPins[1], HIGH);
+        digitalWrite(selectPins[2], LOW);
+        measurement1 = analogRead(readPin1);
+        values16bit[6] = measurement1;
+        measurement2 = analogRead(readPin2);
+        values16bit[14] = measurement2;
+        digitalWrite(selectPins[0], HIGH);
+        digitalWrite(selectPins[1], HIGH);
+        digitalWrite(selectPins[2], HIGH);
+        measurement1 = analogRead(readPin1);
+        values16bit[7] = measurement1;
+        measurement2 = analogRead(readPin2);
+        values16bit[15] = measurement2;
+    }
+
     /*!
     @brief  Function to fetch the values of the multiplexer array
     @return Array of LDR values, boolean gives either HIGH or LOW
@@ -132,18 +252,24 @@ public:
         if (arraySize == 8)
         {
             changed = false;
-            for (int i = 0; i < 8; i++) {
-                if (inputs8[i] > calibrationValues[i]) values8[i] = true;
-                else values8[i] = false;
+            for (int i = 0; i < 8; i++)
+            {
+                if (inputs8[i] > calibrationValues[i])
+                    values8[i] = true;
+                else
+                    values8[i] = false;
             }
             return values8;
         }
         else if (arraySize == 16)
         {
             changed = false;
-            for (int i = 0; i < 16; i++) {
-                if (inputs16[i] > calibrationValues[i]) values16[i] = true;
-                else values16[i] = false;
+            for (int i = 0; i < 16; i++)
+            {
+                if (inputs16[i] > calibrationValues[i])
+                    values16[i] = true;
+                else
+                    values16[i] = false;
             }
             return values16;
         }

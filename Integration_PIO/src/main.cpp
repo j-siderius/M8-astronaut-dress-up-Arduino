@@ -39,8 +39,8 @@ ToxicityLED toxicLED = ToxicityLED(5, 4, 3, 0, 2, 1);
 ServoController oxygenServo = ServoController(dialOxygenPin, 0, 100);
 ServoController gforceServo = ServoController(dialGForcePin, 0, 3);
 ServoController pressureServo = ServoController(dialPressurePin, 0, 1000, true);
-// Multiplexer multiplexer8 = Multiplexer(multiplexerSelectPin1, multiplexerSelectPin2, multiplexerSelectPin3, multiplexerReadPin1, 20);
-// Multiplexer multiplexer16 = Multiplexer(multiplexerSelectPin1, multiplexerSelectPin2, multiplexerSelectPin3, multiplexerReadPin2, multiplexerReadPin3, 20);
+Multiplexer multiplexer8 = Multiplexer(multiplexerSelectPin1, multiplexerSelectPin2, multiplexerSelectPin3, multiplexerReadPin1, 20);
+Multiplexer multiplexer16 = Multiplexer(multiplexerSelectPin1, multiplexerSelectPin2, multiplexerSelectPin3, multiplexerReadPin2, multiplexerReadPin3, 20);
 // PlanetDetector detector = PlanetDetector(100);
 
 // function definitions
@@ -75,21 +75,29 @@ void setup()
 
   comm = SerialController();
 
-  pinMode(buttonSwitchPin, INPUT_PULLUP);
-  pinMode(buttonLEDPin, OUTPUT);
-  digitalWrite(buttonLEDPin, LOW);
-
-  LCDinit();
-  LCDupdate("Earth");
-  delay(5000);
-  LCDupdate("Mercury");
-
   Serial.println("Initialized");
 }
 
 void loop()
 {
-  digitalWrite(buttonLEDPin, !digitalRead(buttonSwitchPin));
+  Serial.print("MUX8: ");
+  multiplexer8.NEWreadMux8(); 
+  for (int i = 0; i < 8; i++)
+  {
+    Serial.print("\t\t");
+    Serial.print(multiplexer8.values8bit[i]);
+  }
+  Serial.println();
+
+  // Serial.print("MUX16: ");
+  // multiplexer16.NEWreadMux16(); 
+  // for (int i = 0; i < 16; i++)
+  // {
+  //   Serial.print("\t");
+  //   Serial.print(multiplexer16.values16bit[i]);
+  // }
+  // Serial.println();
+  delay(500);
 }
 
 // void setup()
