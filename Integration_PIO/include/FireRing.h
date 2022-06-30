@@ -107,7 +107,7 @@ public:
 
     void turnOffAll()
     {
-        for (int i = 0; i < tempLEDnr; i++)
+        for (int i = 0; i < ringLEDnr; i++)
         {
             leds[i] = CRGB::Black;
         }
