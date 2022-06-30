@@ -85,30 +85,24 @@ void setup()
   presServo.begin();
   gfServo.begin();
 
+  travelLED.setTravelTime(12000);
 
   Serial.println("Initialized");
 }
 
 void loop()
 {
-  Serial.print("MUX8: ");
-  multiplexer8.NEWreadMux8(); 
-  for (int i = 0; i < 8; i++)
-  {
-    Serial.print("\t\t");
-    Serial.print(multiplexer8.values8bit[i]);
-  }
-  Serial.println();
 
-  oxyServo.move(150);
-  presServo.move(30);
-  delay(2500);
-  oxyServo.move(30);
-  gfServo.move(150);
-  delay(2500);
-  gfServo.move(30);
-  presServo.move(150);
-  delay(2500);
+  travelLED.run();
+
+  // Serial.print("MUX8: ");
+  // multiplexer8.NEWreadMux8(); 
+  // for (int i = 0; i < 8; i++)
+  // {
+  //   Serial.print("\t\t");
+  //   Serial.print(multiplexer8.values8bit[i]);
+  // }
+  // Serial.println();
 
   // Serial.print("MUX16: ");
   // multiplexer16.NEWreadMux16(); 

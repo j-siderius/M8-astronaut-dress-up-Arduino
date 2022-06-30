@@ -12,29 +12,30 @@
 class TravelLED
 {
 private:
-  int index = 0;
+  int index = travelLEDnr - 1;
   CRGB leds[travelLEDnr];
   Timer travelLEDtimer = Timer(200);
+  bool running = false;
 
 public:
   /*!
   @brief Constructor for the Travel LED
-  @param  maxTime Max time it may take to complete the travel path in ms
   @note   dataPin cannot be defined in the constructor, do that in the class!!
   @return TravelLED object
   */
   TravelLED()
   {
     FastLED.addLeds<NEOPIXEL, travelLEDPin>(leds, travelLEDnr);
-    FastLED.clear();
+    turnOffAll();
   }
 
   /*!
   @brief Updates the travel time according to the distance
-  @param  time Time it takes to reach to the planet
+  @param  time Time it takes to to the planet
   */
-  void setTravelTime(int time) {
-    int delay = time/24;
+  void setTravelTime(int time)
+  {
+    int delay = time / 24;
     travelLEDtimer.changeDelay(delay);
   }
 
@@ -54,27 +55,29 @@ public:
   */
   void travelLED()
   {
-    // turn all LEDS off
-    FastLED.clear(true);
-
-    // set the LEDS to corresponding colors (incl followers)
-    if (index < travelLEDnr)
-      leds[index].setRGB(255, 255, 255);
-    if (index > 0)
-      leds[index - 1].setRGB(200, 200, 200);
-    if (index > 1)
-      leds[index - 2].setRGB(150, 150, 150);
-    if (index > 2)
-      leds[index - 3].setRGB(100, 100, 100);
-
-    // increase the index if we did not finish the strip yet + tail length
-    if (index < travelLEDnr + 3)
-      index++;
-    // reset the index to loop around (or set exiting function here)
-    else
-      index = 0;
-
-    // show the LEDs
+    turnOffAll();
+    for (int i = travelLEDnr - 1; i > -1; i--)
+    {
+      if (i == index)
+        leds[i].setRGB(250, 250, 250);
+      if (i == index + 1 && index < travelLEDnr - 1)
+        leds[i].setRGB(150, 150, 150);
+      if (i == index + 2 && index < travelLEDnr - 2)
+        leds[i].setRGB(100, 100, 100);
+    }
     FastLED.show();
+
+    if (index > -2)
+      index--;
+    else
+      index = travelLEDnr - 1;
+  }
+
+  void turnOffAll()
+  {
+    for (int i = 0; i < travelLEDnr; i++)
+    {
+      leds[i] = CRGB::Black;
+    }
   }
 };
