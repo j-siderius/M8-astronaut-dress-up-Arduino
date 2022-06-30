@@ -247,15 +247,25 @@ public:
 
     void NEWtransformValues8() {
         for (int i = 0; i < 8; i++) {
-            if (values8bit[i] > calibrationValues[i]) bools8bit[i] = true;
-            else bools8bit[i] = false;
+            bool temp;
+            if (values8bit[i] > calibrationValues[i]) temp = true;
+            else temp = false;
+            if (temp != bools8bit[i]) {
+                changed = true;
+                bools8bit[i] = temp;
+            }
         }
     }
 
     void NEWtransformValues16() {
         for (int i = 0; i < 16; i++) {
-            if (values16bit[i] > calibrationValues[i]) bools16bit[i] = true;
-            else bools16bit[i] = false;
+            bool temp;
+            if (values16bit[i] > calibrationValues[i]) temp = true;
+            else temp = false;
+            if (temp != bools16bit[i]) {
+                bools16bit[i] = temp;
+                changed = true;
+            }
         }
     }
 
@@ -318,7 +328,12 @@ public:
      */
     bool hasChanged()
     {
-        return changed;
+        if (changed) {
+            changed = false;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
