@@ -30,7 +30,7 @@ public:
   GeneralLight()
   {
     FastLED.addLeds<NEOPIXEL, generalLEDPin>(leds, generalLEDNr);
-    FastLED.clear();
+    turnOffAll();
   }
 
   /*!
@@ -143,6 +143,14 @@ public:
     if (group > 0 && group < 5)
     {
       brightness[(group - 1)] = bright;
+    }
+  }
+
+  void turnOffAll()
+  {
+    for (int i = 0; i < tempLEDnr; i++)
+    {
+      leds[i] = CRGB::Black;
     }
   }
 };

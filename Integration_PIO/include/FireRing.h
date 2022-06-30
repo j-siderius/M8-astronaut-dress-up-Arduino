@@ -24,7 +24,7 @@ public:
     {
         // initialize LEDs
         FastLED.addLeds<NEOPIXEL, ringLEDPin>(leds, ringLEDnr);
-        FastLED.clear();
+        turnOffAll();
     }
 
     /*!
@@ -48,7 +48,8 @@ public:
     */
     void run()
     {
-        if (!initialized) {
+        if (!initialized)
+        {
             initFire();
             initialized = true;
         }
@@ -102,5 +103,13 @@ public:
         // add some random delay
         int randDelay = random(100, 250);
         ledFireTimer.changeDelay(randDelay);
+    }
+
+    void turnOffAll()
+    {
+        for (int i = 0; i < tempLEDnr; i++)
+        {
+            leds[i] = CRGB::Black;
+        }
     }
 };

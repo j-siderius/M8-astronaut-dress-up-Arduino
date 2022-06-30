@@ -21,14 +21,15 @@ public:
     TemperatureLED()
     {
         FastLED.addLeds<NEOPIXEL, tempLEDPin>(leds, tempLEDnr);
-        FastLED.clear();
+        turnOffAll();
     }
 
     /*!
     @brief Set the temperature of the LED strip
     @param  temperature     Value of the temperature
     */
-    void setTemperature(int temperature) {
+    void setTemperature(int temperature)
+    {
         this->temperature = temperature;
     }
 
@@ -46,7 +47,7 @@ public:
         }
         FastLED.show();
     }
-    
+
     /*!
     @brief Turns leds off.
     */
@@ -59,5 +60,13 @@ public:
             leds[i].b = 0;
         }
         FastLED.show();
+    }
+
+    void turnOffAll()
+    {
+        for (int i = 0; i < tempLEDnr; i++)
+        {
+            leds[i] = CRGB::Black;
+        }
     }
 };

@@ -27,7 +27,7 @@ public:
     this->HEPos = HEPos;
 
     FastLED.addLeds<NEOPIXEL, toxicityLEDPin>(leds, toxicityLEDNr);
-    FastLED.clear();
+    turnOffAll();
   }
 
   void displayToxicity()
@@ -77,5 +77,13 @@ public:
   int returnValue()
   {
     return (HEPercent);
+  }
+
+  void turnOffAll()
+  {
+    for (int i = 0; i < tempLEDnr; i++)
+    {
+      leds[i] = CRGB::Black;
+    }
   }
 };
