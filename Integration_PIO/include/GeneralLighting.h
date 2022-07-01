@@ -53,7 +53,7 @@ public:
    */
   void colourGroup(int group, int r, int g, int b)
   {
-    int nrLeds = groups[group + 1] - groups[group];
+    int nrLeds = groups[group] - groups[group-1];
     for (int i = 0; i < nrLeds; i++)
     {
       leds[i].setRGB(r, g, b);
@@ -67,7 +67,7 @@ public:
    * @param group group number (1-5)
    */
   void groupRed(int group) {
-    int nrLeds = groups[group + 1] - groups[group];
+    int nrLeds = groups[group] - groups[group-1];
     for (int i = 0; i < nrLeds; i++)
     {
       leds[i] = RED;
@@ -81,7 +81,7 @@ public:
    * @param group group number (1-5)
    */
   void groupGreen(int group) {
-    int nrLeds = groups[group + 1] - groups[group];
+    int nrLeds = groups[group] - groups[group-1];
     for (int i = 0; i < nrLeds; i++)
     {
       leds[i] = GREEN;
@@ -95,7 +95,7 @@ public:
    * @param group group number (1-5)
    */
   void groupBlue(int group) {
-    int nrLeds = groups[group + 1] - groups[group];
+    int nrLeds = groups[group] - groups[group-1];
     for (int i = 0; i < nrLeds; i++)
     {
       leds[i] = BLUE;
@@ -109,7 +109,7 @@ public:
    * @param group group number (1-5)
    */
   void groupWhite(int group) {
-    int nrLeds = groups[group + 1] - groups[group];
+    int nrLeds = groups[group] - groups[group-1];
     for (int i = 0; i < nrLeds; i++)
     {
       leds[i] = WHITE;
@@ -137,7 +137,7 @@ public:
     {
       leds[i] = CRGB::Black;
     }
-    FastLED.show();
+    // FastLED.show();  // problem?
   }
 
   // /*!

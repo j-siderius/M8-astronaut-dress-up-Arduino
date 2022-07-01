@@ -36,7 +36,7 @@ TemperatureController tempFan = TemperatureController(temperatureColdPin, temper
 TemperatureLED tempLED = TemperatureLED();
 TravelLED travelLED = TravelLED();
 FireRing fireLED = FireRing();
-// GeneralLight generalLED = GeneralLight();
+GeneralLight generalLED = GeneralLight();
 ToxicityLED toxicLED = ToxicityLED(5, 4, 3, 0, 2, 1);
 // ServoController oxygenServo = ServoController(dialOxygenPin, 0, 100);
 // ServoController gforceServo = ServoController(dialGForcePin, 0, 3);
@@ -133,6 +133,12 @@ void loop()
     if (!planetSelected)
     {
 
+      generalLED.groupBlue(1);
+      generalLED.groupRed(2);
+      generalLED.groupRed(3);
+      generalLED.groupRed(4);
+      generalLED.groupRed(5);
+
       // --- PLANET CHECK --- //
       multiplexer8.NEWreadMux8();
       multiplexer8.NEWtransformValues8();
@@ -163,6 +169,12 @@ void loop()
         comm.sendChar('L'); // send launching command to Python (it determines if we actually launch or not)
         comm.sendBool(true);
       }
+
+      generalLED.groupGreen(1);
+      generalLED.groupRed(2);
+      generalLED.groupRed(3);
+      generalLED.groupRed(4);
+      generalLED.groupBlue(5);
 
       // --- ASTRONAUT CHECK --- //
       multiplexer16.NEWreadMux16();
@@ -215,6 +227,11 @@ void loop()
         {
           // pre-launch
           // Serial.println("pre-launch");
+          generalLED.groupGreen(1);
+          generalLED.groupRed(2);
+          generalLED.groupBlue(3);
+          generalLED.groupRed(4);
+          generalLED.groupGreen(5);
         }
         break;
 
@@ -230,6 +247,12 @@ void loop()
         presServo.move(0);
         gfServo.move(0);
         tempLED.turnOffAll();
+
+        generalLED.groupGreen(1);
+        generalLED.groupRed(2);
+        generalLED.groupBlue(3);
+        generalLED.groupRed(4);
+        generalLED.groupGreen(5);
 
         // run rocket animations
         fireLED.run();
@@ -271,6 +294,7 @@ void loop()
     if (inSpace)
     {
       travelLED.run();
+      
     }
 
     // --- FIRST CALL --- //
@@ -292,6 +316,12 @@ void loop()
 
       vapeFanMosfet.turnOff();
       vapeMosfet.turnOff();
+
+          generalLED.groupWhite(1);
+          generalLED.groupWhite(2);
+          generalLED.groupWhite(3);
+          generalLED.groupWhite(4);
+          generalLED.groupWhite(5);
     }
 
     /*
@@ -362,37 +392,42 @@ void loop()
   case 4:
   // survived
   case 5:
-  if (ending) {
-    // wait until reset 
-  } else {
-    // Serial.println("state 4 selected");
-    tempLED.turnOff();
-    tempFan.tempOff();
-    travelLED.turnOffAll();
-    toxicLED.turnOffElements();
+    if (ending)
+    {
+      // wait until reset
+    }
+    else
+    {
+      // Serial.println("state 4 selected");
+      tempLED.turnOff();
+      tempFan.tempOff();
+      travelLED.turnOffAll();
+      toxicLED.turnOffElements();
 
-    planetSelected = false;
-    launching = false;
-    inSpace = false;
-    landed = false;
-    doorOpen = false;
+      planetSelected = false;
+      launching = false;
+      inSpace = false;
+      landed = false;
+      doorOpen = false;
 
-    vapeMosfet.turnOff();
-    vapeFanMosfet.turnOff();
-    humidifierMosfet.turnOff();
-    smellMosfet.turnOff();
+      vapeMosfet.turnOff();
+      vapeFanMosfet.turnOff();
+      humidifierMosfet.turnOff();
+      smellMosfet.turnOff();
 
-    digitalWrite(buttonLEDPin, LOW);
+      digitalWrite(buttonLEDPin, LOW);
 
-    LCDupdate("");
+      LCDupdate("");
 
-    fireLED.turnOffAll();
-    oxyServo.move(0);
-    gfServo.move(0);
-    presServo.move(0);
+      fireLED.turnOffAll();
+      oxyServo.move(0);
+      gfServo.move(0);
+      presServo.move(0);
 
-    ending = true;
-  }
+      generalLED.turnOffAll();
+
+      ending = true;
+    }
 
     /*
     - do nothing (all special shit gets done by python
@@ -426,4 +461,3 @@ void LCDupdate(String name)
     lcd.print(planetName);
   }
 }
-
